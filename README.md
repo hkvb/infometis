@@ -1,6 +1,6 @@
 # `hkvb/infometis` Image Library
 
-The Infometis image library.
+The Infometis image library and controlplane.
 
 ## hkvb/infometis
 
