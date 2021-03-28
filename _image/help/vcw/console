@@ -1,0 +1,50 @@
+#
+#
+# console API - infometis.base
+# Use the --info flag to get console specific information.
+#
+# The console API contains methods that run outside the image repository context.
+#
+# console backup/restore [internal/external/package/module]
+# Create or restore backup of hkvb external/internal and modeco package/module images.
+#
+# console clone-repo [repository name]
+# Git clone the repository if the repository folder does not exist.
+#
+# console cmd [command + arguments]
+# Execute the command, to be used in conjunction with execute-selection.
+#
+# console infometis-service [API command + arguments]
+# Execute the command across all nodes.
+# It forces an API command by prefixing the command supplied with .invoke
+#
+# console execute [command + arguments] [selector]
+# Execute the command and argument on each of all the images selected by the selector.
+# The selector extracts images from the hkvb/assets/images/image-list file stored by infometis.base
+#
+# console extract-repo [repository short name]
+# Extracts the repository from the container image specified by [repository short name].
+# The [repository short name] consists of $VCW_IMAGE.$VCW_FLAVOR, i.e. the last two name parts dot separated before the image tag.
+#
+# console load ['--from-tar' optional] [image name] [image tag - optional]
+# With `--from-tar` it loads the image from the `tar` file stored in the `/images` folder.
+# Without `--from-tar` it pulls and tags the container image specified by [image name].
+# If the [image tag] is supplied than it creates a second tag for the image.
+#
+# console save [image name]
+# Save the image as tar file putting it into the /hkvb/pwd/images folder.
+#
+# console set-repo-user [name] [email]
+# Sets the current use identity to be used for GIT operations on the repositories.
+#
+# console start-registry  [port optional]
+# Starts the infometis local insecure registry on the port specified or port 5000.
+#
+# console stop-registry  [port optional]
+# Stops the infometis local insecure registry.
+#
+# console unload [image name] [image tag - optional]
+# Untags the container image specified by [image name].
+# If the [image tag] is supplied than it untags both latest and tag specific image.
+#
+#

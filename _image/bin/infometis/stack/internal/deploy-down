@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+selectedNode="$1"
+
+IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACKNAMES}"
+for stackName in ${stackNames[@]};
+do
+	executionplane docker stack remove  "$stackName"
+done;
+
+executionplane docker network rm  "${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay"
+executionplane docker network rm  "${VCW_STACK_GLOBAL_NETWORKGLOBAL}_overlay"
+executionplane docker container prune --force
+
+if [[ "$VCW_STACK_GLOBAL_VOLUME_LIST" != "" ]] ; then
+	IFS=',' read -r -a volumes <<< "${VCW_STACK_GLOBAL_VOLUME_LIST}"
+	for volume in ${volumes[@]};
+	do
+		volumeName="$(echo "$volume" | envsubst)"
+		continue="true"
+		while [[ "true" == "$continue" ]] ;
+		do
+
+			executionplane docker volume rm "$volumeName"
+			result=$(docker volume ls | grep "$volumeName")
+			executionplane-info "$result"
+			if [[ "$result" != "" ]] ; then sleep 3;
+			else continue="false"; fi
+
+		done;
+	done;
+fi

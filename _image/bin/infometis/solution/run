@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+(
+	export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_SOLUTION"
+	. executionplane-invoke "$0 $@"
+	selectedNode="${@: -1}"
+	if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	cd /vcw/pwd/${selectedNode}
+	imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
+	imageTag=$(git describe --tags HEAD)
+
+	method="$1"; shift;
+	if [[ "$1" != "-"* && $# -gt 1  ]] ; then component="$1"; shift; fi
+	if [[ "$1" != "-"* && $# -gt 1  ]] ; then stack="$1"; shift; fi
+	if [[ "$1" == "--recurse" ]] ; then recurse="true"; shift; else recurse="false"; fi
+	if [[ "$component" == "" ]] ; then deployScope="infometis"; component="."; fi
+
+	if [[ ! -f _solution/configuration ]] ; then executionplane-error "Solution configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+	if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+	if [[ ! -f ${componentPath}/_configuration/configuration ]] ; then executionplane-error "Solution component configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	. set-config
+
+	# if no component and first iteration, then execute repo script
+	if [[ "$deployScope" == "infometis" && " reboot restart " != *" $method"* && "$VCW_SOLUTION_CUSTOM_IMPLEMENTATION_TRIGGERED" != "true" && "$1" != "--no-custom"  ]] ; then
+		export VCW_SOLUTION_CUSTOM_IMPLEMENTATION_TRIGGERED="true"
+  	. ${componentPath}/_infometis/$method $@
+  else
+		if [[ "$stack" == "" ]] ; then stack="."; fi
+		case $method in
+			boot|shutdown|start|stop)
+				run-stack $method $component $stack ${@:1:$#-1}
+				if [[ "$recurse" == "true" ]] ; then component-child-axis $selectedNode $component --arg:$stack --arg:--recurse run $method; fi
+			;;
+			pause)
+				executionplane-error "Method not implemented: $1."
+			;;
+			reboot)
+				run shutdown $component $stack $@
+				run boot $component $stack $@
+			;;
+			restart)
+				run stop $component $stack $@
+				run start $component $stack $@
+			;;
+			resume)
+				executionplane-error "Method not implemented: $1."
+			;;
+			*)
+				.base run $@
+			;;
+		esac
+	fi
+
+	cd /vcw/pwd
+	executionplane-complete
+)

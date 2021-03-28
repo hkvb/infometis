@@ -1,0 +1,51 @@
+#
+#
+# repo API - infometis.base
+# Use the --info flag to get repo specific container image information.
+#
+# The repo API consists of methods that operate on the repository.
+# These are either direct ports or implemented using methods of GIT.
+#
+# repo commit [message]  <repository selector>
+# Add the unstaged files and commits the staged files to the current (master) branch.
+# It then adjusts the current tag to the latest commit.
+#
+# repo compact  <repository selector>
+# Compacts the commit log with garbage collection and pushes it out to the remote.
+#
+# repo config <repository selector>
+# Sets the remote origin of the repository and sets the credentials to be stored.
+#
+# console extract <repository selector>
+# Extracts the repository from the cached repository image on top of the existing repository.
+#
+# repo load ['--from-tar' optional] [image name] [image tag - optional] <repository selector>
+# With `--from-tar` it loads the image from the `tar` file stored in the `/images` folder.
+# Without `--from-tar` it pulls and tags the container image specified by [image name].
+# If the [image tag] is supplied than it creates a second tag for the image.
+#
+# repo log10  <repository selector>
+# Displays a compact summary of the last 10 commits of the repository.
+#
+# repo push  <repository selector>
+# Pushes the current branch to its remote and updates the current remote tag to the latest commit
+#
+# repo remove <repository selector>
+# Remove the repository from the filesystem.
+#
+# repo retag-image [new prefix] <repository selector>
+# Retags the image associated with the repository by replacing the registry-realm prefix with the new prefix supplied.
+#
+# repo save <repository selector>
+# Saves the current tagged image in cache to a tar file in the `/images` folder.
+#
+# repo status <repository selector>
+# Gives the current status of the repository. Direct port of _git status_.
+#
+# repo tag-registry <repository selector>
+# Retags the selected images with the current registry prefix.
+#
+# repo untag-registry <repository selector>
+# Retags the selected images without the current registry prefix.
+#
+#

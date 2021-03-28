@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+rootPath=$1
+shopt -s nullglob
+rootSelections=( "" )
+subfolders=( "/docs/*" "/vcw/*" "/vcw/*/*" "/vcw/*/*/*" "/vcw/*/*/*/*" "/vcw/*/*/*/*/*" "/modeco/*" )
+for rootfolder in "${rootSelections[@]}"
+do
+	for f in $rootPath$rootfolder/*;
+	do
+		if [[ -f $f ]] ; then
+			filename=`basename "$f"`
+			if [[ $filename != *"."* || $filename == "."* || $filename == *".static" || $filename == *".md" ]] ; then
+				executionplane-info "removing cr in $f"
+				dos2unix $f
+			fi
+		fi
+	done;
+	for subfolder in "${subfolders[@]}"
+	do
+		for f in $rootPath$rootfolder$subfolder;
+		do
+			if [[ -f $f ]] ; then
+				executionplane-info "removing cr in $f"
+				dos2unix $f
+			fi
+		done;
+	done;
+done

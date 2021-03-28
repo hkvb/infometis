@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+solution=$(echo "$1" | tr '/' '_')
+
+if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+
+DOLLAR='$'
+. ${componentPath}/_configuration/configuration;
+if [[ "$component" != "." ]] ; then
+  if [[ "$VCW_SOLUTON_HIDE_COMPONENT" == "true" ]] ; then
+    suffix="$(dirname "/$component" | tr '/' '_')"
+    if [[ "$suffix" == "_" ]] ; then suffix=""; fi
+    urlSuffix="$(dirname "/$component")";
+    if [[ "$urlSuffix" == "/" ]] ; then urlSuffix=""; fi
+  else
+    suffix="$(echo "/$component" | tr '/' '_')"
+    urlSuffix="/$component";
+  fi
+  export VCW_STACK_HOSTNAME="${DOLLAR}{VCW_SOLUTION_HOSTNAME}"
+  export VCW_STACK_GLOBAL_NETWORKGLOBAL="vcw_global"
+  export VCW_STACK_GLOBAL_NETWORKLOCAL="${solution}_${suffix}"
+  export VCW_STACK_MODULEPREFIX="${solution}_${suffix}"
+  export VCW_STACK_MODULE_URLPREFIX="${selectedNode}/${component}"
+else
+  export VCW_STACK_HOSTNAME="${DOLLAR}{VCW_SOLUTION_HOSTNAME}"
+  export VCW_STACK_GLOBAL_NETWORKGLOBAL="vcw_global"
+  export VCW_STACK_GLOBAL_NETWORKLOCAL="${solution}"
+  export VCW_STACK_MODULEPREFIX="${solution}"
+  export VCW_STACK_MODULE_URLPREFIX="${selectedNode}"
+fi
+
+. _solution/configuration
+. ${componentPath}/_configuration/configuration;

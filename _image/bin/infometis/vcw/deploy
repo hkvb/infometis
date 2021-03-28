@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+(
+  export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_VCW"
+  . executionplane-invoke "$0 $@"
+  selectedNode="${@: -1}"
+  if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+  cd /vcw/pwd/${selectedNode}
+  imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
+  imageTag=$(git describe --tags HEAD)
+
+  case $1 in
+    module)
+      shift;
+  		.module deploy $@
+  	;;
+    solution)
+      shift;
+  		.solution deploy $@
+  	;;
+    stack)
+      shift;
+  		.stack deploy $@
+  	;;
+    *)
+      executionplane-error "Method not recognised: $1."
+    ;;
+  esac
+  cd /vcw/pwd
+  executionplane-complete
+)

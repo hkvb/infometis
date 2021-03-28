@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+if [[ ! -d _stack/stacks ]] ; then mkdir _stack/stacks; fi
+
+environment_template=$'#!/usr/bin/env bash\n\n'
+docker_compose_template=$'---\nversion: \'3\'\nservices:\n\n'
+#IFS=',' read -r -a stacks <<< "$(echo ${VCW_STACK_GLOBAL_STACK_STACKS} | tr '\\' ' ' | tr '\n' ' ')"
+IFS=',' read -r -a stacks <<< "${VCW_STACK_GLOBAL_STACK_STACKS}"
+IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACK_STACKNAMES}"
+for stackNumber in ${!stacks[@]};
+do
+	stack=${stacks[stackNumber]}
+	stackName=${stackNames[stackNumber]}
+	stackPath="/vcw/pwd/$stack/_stack"
+	stackEnvironment=$(sed -n "/# START SETTINGS/,/# END SETTINGS/p" $stackPath/settings)
+	environment_template="${environment_template}${stackEnvironment}
+
+"
+	stackDockerCompose=$(sed -n "/# START SERVICE/,/# END SERVICE/p" $stackPath/stacks/$stackName.docker-compose.yml)
+	docker_compose_template="${docker_compose_template}${stackDockerCompose}
+
+"
+	done;
+DOLLAR="$"
+docker_compose_template="${docker_compose_template}\
+networks: {${DOLLAR}{VCW_STACK_GLOBAL_NETWORKS}}
+volumes: {${DOLLAR}{VCW_STACK_GLOBAL_VOLUMES}}
+${DOLLAR}{VCW_STACK_GLOBAL_COMPOSE_EXTENSIONS}
+"
+echo "$environment_template" > _stack/settings.tmp
+sed -i -e "s/VCW_STACK_/${VCW_STACK_GLOBAL_STACKNAMES^^}_/g" _stack/settings.tmp
+sed -i -e "s/VCW_STACK_${VCW_STACK_GLOBAL_STACKNAMES^^}_GLOBAL/VCW_STACK_GLOBAL/g" _stack/settings.tmp
+
+echo "$docker_compose_template" > _stack/stacks/${VCW_STACK_GLOBAL_STACKNAMES}.docker-compose.yml.tmp
+sed -i -e "s/VCW_STACK_/${VCW_STACK_GLOBAL_STACKNAMES^^}_/g" _stack/stacks/${VCW_STACK_GLOBAL_STACKNAMES}.docker-compose.yml.tmp
+sed -i -e "s/${VCW_STACK_GLOBAL_STACKNAMES^^}_GLOBAL/VCW_STACK_GLOBAL/g" _stack/stacks/${VCW_STACK_GLOBAL_STACKNAMES}.docker-compose.yml.tmp

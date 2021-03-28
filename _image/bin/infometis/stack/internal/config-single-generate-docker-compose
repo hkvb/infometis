@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+if [[ ! -d _stack/stacks ]] ; then mkdir _stack/stacks; fi
+
+composeTemplate=/vcw/templates/docker-compose.yml.template
+destination=_stack/stacks/${VCW_STACK_GLOBAL_STACKNAMES}.docker-compose.yml
+
+tmpfile=$(mktemp /tmp/docker-compose.yml.template.XXXXXX)
+
+cat $composeTemplate | envsubst '$VCW_SERVICE_ID, $VCW_TAG'	> $tmpfile
+sed -i -e "s/VCW_STACK_SERVICE_/${VCW_STACK_GLOBAL_STACKNAMES^^}_/g" $tmpfile
+cat $tmpfile | envsubst "$VCW_STACK_GLOBAL"	> $destination
+
+rm $tmpfile

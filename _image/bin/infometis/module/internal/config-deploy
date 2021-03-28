@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+ selectedNode="$1"
+
+DOLLAR='$'
+echo $'#!/usr/bin/env bash\n' > _module/deploy-local-down
+echo "prefix=\"${VCW_STACK_MODULEPREFIX}__${DOLLAR}1\"" >> _module/deploy-local-down
+echo "prefix=\"${VCW_STACK_MODULEPREFIX}__${DOLLAR}1\"" >> _module/deploy-local-down
+cp _module/deploy-local-down _module/deploy-local-up
+
+echo "
+executionplane --silent docker container prune --force" >> _module/deploy-local-down
+
+IFS=$'\n' read -d '' -r -a volumes < _module/module-volumes
+for volume in ${volumes[@]};
+do
+	#	executionplane --silent docker volume rm --force ${volume}
+	echo "
+if [[ \"${VCW_STACK_MODULEPREFIX}__${volume}\" == \"${DOLLAR}prefix\"* ]] ; then
+	continue=\"true\"
+	while [[ \"true\" == \"${DOLLAR}continue\" ]] ;
+	do
+		executionplane docker volume rm \"${VCW_STACK_MODULEPREFIX}__${volume}\"
+		result=${DOLLAR}(docker volume ls | grep \"${VCW_STACK_MODULEPREFIX}__${volume}\")
+		if [[ \"${DOLLAR}result\" == \"\" ]] ; then
+			continue=\"false\"
+		else
+			sleep 3;
+		fi
+	done;
+fi" >> _module/deploy-local-down
+
+	echo "
+if [[ \"${VCW_STACK_MODULEPREFIX}__${volume}\" == \"${DOLLAR}prefix\"* ]] ; then
+	executionplane --silent docker volume create ${VCW_STACK_MODULEPREFIX}__${volume}
+fi" >> _module/deploy-local-up
+done;
+
+IFS=$'\n' read -d '' -r -a volumes < _module/module-volumes-initialised
+for volumeSettings in ${volumes[@]};
+do
+	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
+	volumeDir=$(echo $volumeSettings | cut -d':' -f 2)
+	if [[ -d _module/volumes/${volumeName} ]] ; then
+		echo "
+if [[ \"${VCW_STACK_MODULEPREFIX}__${volumeName}\" == \"${DOLLAR}prefix\"* ]] ; then
+	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/${selectedNode}/_module/volumes/${volumeName}/* ${volumeDir}
+fi" >> _module/deploy-local-up
+	else
+		echo "
+if [[ \"${VCW_STACK_MODULEPREFIX}__${volumeName}\" == \"${DOLLAR}prefix\"* ]] ; then
+	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console untar /source/${selectedNode}/_module/volumes/${volumeName}.tar
+fi" >> _module/deploy-local-up
+	fi
+done;
+
+chmod -R 777 _module/deploy-local*

@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+(
+  export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_VCW"
+  . executionplane-invoke "$0 $@"
+  case $1 in
+    clone-repo)
+      repoName="$2"
+      realm=$(echo ${repoName} | cut -d"/" -f1)
+      if [[ ! -d /hkvb/pwd/${repoName} ]] ; then
+        if [[ ! -d /hkvb/pwd/${realm} ]] ; then mkdir /hkvb/pwd/${realm}; chmod -R 777 /hkvb/pwd/${realm}; fi
+        cd /hkvb/pwd/${realm}
+        executionplane git clone https://github.com/${repoName}.git
+        cd /hkvb/pwd/
+        executionplane chmod -R 777 /hkvb/pwd/${repoName}
+      else
+        executionplane-warning "Repository folder already exists!"
+      fi
+    ;;
+    cmd)
+      shift
+      executionplane $@
+    ;;
+    infometis-service)
+      shift
+      infometis-service $@
+    ;;
+    load)
+      case $2 in
+        all)
+          console load external;
+          console load hub-external;
+          console load hub;
+        ;;
+        external|hub|hub-external)
+          IFS=$'\n' read -d '' -r -a images < /vcw/assets/images/${2}-images
+          for image in ${images[@]};
+          do
+            executionplane docker image pull ${image}
+            executionplane docker tag ${image} ${VCW_REGISTRY}${image}
+          done
+        ;;
+        *)
+          executionplane docker image pull ${2}
+          executionplane docker tag ${2} ${VCW_REGISTRY}${2}
+        ;;
+      esac
+    ;;
+    release)
+      case $2 in
+        all)
+          console release external;
+          console release hub-external;
+          console release hub;
+        ;;
+        external|hub|hub-external)
+          IFS=$'\n' read -d '' -r -a images < /vcw/assets/images/${2}-images
+          for image in ${images[@]};
+          do
+            executionplane docker image push ${VCW_REGISTRY}${image}
+          done
+        ;;
+        *)
+          executionplane docker image push ${VCW_REGISTRY}${image}
+        ;;
+      esac
+    ;;
+    reload-infometis)
+      if [[ "$2" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
+        infometis-service console reload-infometis --local $selectedNode
+      else
+        executionplane docker image pull ${VCW_REGISTRY}hkvb/infometis
+      fi
+    ;;
+    reset)
+      echo "" > ${VCW_CURRENT_CONSOLE_SELECTION}
+    ;;
+    set)
+      echo "$2" > "${VCW_CURRENT_CONSOLE_SELECTION}"
+      repoNode=$(echo $2 | cut -d"/" -f1)/$(echo ${2} | cut -d"/" -f2)
+      if [[ ! -d ./${repoNode} && "${3}" == "--extract" ]] ; then
+        if [[ "$4" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
+  				infometis-service console set "$2" --extract --local
+  			else
+          executionplane-info "${repoNode}: Repo does not exist.";
+          executionplane docker pull ${VCW_REGISTRY}${repoNode};
+          . executionplane-capture-output docker create ${VCW_REGISTRY}${repoNode}
+      		executionplane mkdir -p /vcw/pwd/${repoNode}
+      		executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/. /vcw/pwd/${repoNode}/
+          executionplane chmod -R 777 /vcw/pwd/${repoNode}
+        fi
+      fi
+    ;;
+    set-repo-user)
+  		executionplane git config --global user.name "${2}"
+  		executionplane git config --global user.email "${3}"
+      executionplane git config --global core.filemode false
+  	;;
+    start-registry)
+      port="${2}"
+      if [[ "$port" == "" ]] ; then
+        port="5000"
+      fi
+      executionplane docker run -d -p ${port}:5000 --restart=always --name hkvb_registry_base_2 -v hkvb_registry_base_2_data:/var/lib/registry ${VCW_REGISTRY}hkvb/registry.base:2
+  	;;
+    stop-registry)
+      executionplane docker container rm --force hkvb_registry_base_2
+      executionplane docker volume rm --force hkvb_registry_base_2_data
+    ;;
+    tar)
+      tar cvf $2 $3  > /dev/null
+    ;;
+    unload)
+      repoName="$2"
+      executionplane docker image rm --force ${VCW_REGISTRY}${repoName}
+      if [[ "${VCW_REGISTRY}" != "" ]] ; then executionplane docker image rm --force ${VCW_REGISTRY}${repoName}; fi
+    ;;
+    untar)
+      tar -C / -xvf $2  > /dev/null
+    ;;
+    with)
+      executionplane-info "console $@"
+    ;;
+   *)
+      executionplane-error "Method not recognised: $1."
+    ;;
+  esac
+  executionplane-complete
+)

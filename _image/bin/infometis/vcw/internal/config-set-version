@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+version=$1
+rootPath=$2
+
+oldtext="$VCW_TAG"
+export VCW_TAG=$version
+sedstring="s/$oldtext/$VCW_TAG/g"
+sed -i "s/$oldtext/$VCW_TAG/g" "$rootPath/environment"
+executionplane-info "New Version: $VCW_TAG"

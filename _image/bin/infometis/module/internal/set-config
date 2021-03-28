@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+module=$(echo "$1" | tr '/' '_')
+
+DOLLAR='$'
+export VCW_STACK_GLOBAL_NETWORKGLOBAL="vcw_global"
+export VCW_STACK_GLOBAL_NETWORKLOCAL="vcw_module_${module}"
+export VCW_STACK_MODULEPREFIX="vcw_module_${module}"
+export VCW_STACK_MODULE_URLPREFIX="vcw_module/${selectedNode}"
+export VCW_STACK_HOSTNAME="${DOLLAR}{VCW_HOSTNAME}"
+. _module/configuration

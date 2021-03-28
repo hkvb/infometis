@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+imageName=$1
+scriptFile=$2
+shift
+shift
+rootPath="/vcw/pwd/${imageName}"
+if [[ -d $rootPath ]] ; then
+	if [[ -f $rootPath/$scriptFile ]] ; then
+		chmod 777 $rootPath/$scriptFile
+		. $rootPath/$scriptFile $@
+	else
+		executionplane-warning "$scriptFile: Requested file does not exist!"
+	fi
+else
+	tmpfile=$(mktemp /tmp/run-script.XXXXXX)
+	. executionplane-capture-output docker create ${VCW_REGISTRY}$imageName
+	executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/${scriptFile} $tmpfile
+	. $tmpfile $@
+	rm $tmpfile
+fi

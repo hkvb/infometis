@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+selectedNode="$1"
+component=$2
+if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+
+. set-config $selectedNode
+
+DOLLAR='$'
+echo $'#!/usr/bin/env bash\n' > ${componentPath}/_configuration/deploy-local-down
+echo $'#!/usr/bin/env bash\n' > ${componentPath}/_configuration/deploy-local-up
+
+echo "executionplane --silent docker container prune --force" >> ${componentPath}/_configuration/deploy-local-down
+IFS=$'\n' read -d '' -r -a volumes < ${componentPath}/_configuration/module-volumes
+for volume in ${volumes[@]};
+do
+	echo "continue=\"true\"
+while [[ \"true\" == \"${DOLLAR}continue\" ]] ;
+do
+	executionplane docker volume rm \"${VCW_STACK_MODULEPREFIX}__${volume}\"
+	result=${DOLLAR}(docker volume ls | grep \"${VCW_STACK_MODULEPREFIX}__${volume}\")
+	if [[ \"${DOLLAR}result\" == \"\" ]] ; then
+		continue=\"false\"
+	else
+		sleep 3;
+	fi
+done;
+	" >> ${componentPath}/_configuration/deploy-local-down
+
+echo "executionplane --silent docker volume create ${VCW_STACK_MODULEPREFIX}__${volume}
+	" >> ${componentPath}/_configuration/deploy-local-up
+done;
+
+IFS=$'\n' read -d '' -r -a volumes < ${componentPath}/_configuration/module-volumes-initialised
+for volumeSettings in ${volumes[@]};
+do
+	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
+	volumeDir=$(echo $volumeSettings | cut -d':' -f 2)
+	if [[ -d "${componentPath}/_configuration/volumes/${volumeName}" ]] ; then
+		echo "
+executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/${selectedNode}/_solution/_configuration/volumes/${volumeName}/* ${volumeDir}
+" >> ${componentPath}/_configuration/deploy-local-up
+	else
+		echo "
+executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console untar /source/${selectedNode}/_solution/_configuration/volumes/${volumeName}.tar
+" >> ${componentPath}/_configuration/deploy-local-up
+	fi
+done;
+
+chmod -R 777 $componentPath/_configuration/deploy-local*
+
+IFS=$'\n' read -d '' -r -a volumes < $componentPath/_configuration/module-volumes-initialised
+for volumeSettings in ${volumes[@]};
+do
+	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
+	if [[ -d _configuration/configs/$volumeName ]] ; then
+		for f in $(find _configuration/configs/$volumeName ); do
+			if [[ -f $f ]] ; then cat $f | envsubst > ${f//configs/volumes};
+			elif [[ ! -d ${f//configs/volumes} ]] ; then mkdir ${f//configs/volumes}; fi
+		done
+	fi
+done;

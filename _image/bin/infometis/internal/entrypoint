@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+export PATH="/vcw/bin/infometis:${PATH}"
+export VCW_EXECUTIONPLANE_ORIGINALPATH="/vcw/bin/infometis:$VCW_EXECUTIONPLANE_ORIGINALPATH"
+export VCW_EXECUTIONPLANE_BASEPATH=$VCW_EXECUTIONPLANE_ORIGINALPATH
+
+export VCW_EXECUTIONTAG=$(create-random)
+
+# extract registry from image name of running cli container
+if [[ "$(docker container ls )" != "" ]] ; then
+  while [[ "$(docker container ls | grep hkvb/infometis )" == "" ]] ;
+  do
+    sleep 1
+  done;
+  imagePrefix="$(docker container ls | grep hkvb/infometis | awk '{ print $2 }' FS=' ' | awk '{ print $1 }' FS='/infometis.' )"
+  registry="$( echo "${imagePrefix/${VCW_REALM}/}" | cut -d$'\n' -f 1)"
+  export VCW_REGISTRY="$registry"
+fi

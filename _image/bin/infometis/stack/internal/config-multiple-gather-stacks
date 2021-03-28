@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+DOLLAR="$"
+
+if [[ ! -d _stack/stacks ]] ; then mkdir _stack/stacks; fi
+
+echo $'#!/usr/bin/env bash\n' > _stack/settings.tmp
+IFS=',' read -r -a stacks <<< "${VCW_STACK_GLOBAL_STACKS}"
+IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACKNAMES}"
+IFS=',' read -r -a stackNamesPrevious <<< "${VCW_STACK_GLOBAL_STACKNAMES_PREVIOUS}"
+for stackNumber in ${!stacks[@]};
+do
+	stack=${stacks[stackNumber]}
+	stackName=${stackNames[stackNumber]}
+	stackNamePrevious=${stackNamesPrevious[stackNumber]}
+#	if [[ "$package" == "" ]] ; then package=${stackNames[stackNumber]}; fi
+	package=${stackNames[0]};
+
+	destination=_stack/stacks/$stackName.docker-compose.yml.tmp
+	cp /vcw/pwd/${stack}/_stack/stacks/$stackNamePrevious.docker-compose.yml $destination
+	if [[ "${stackNamePrevious^^}" != "${stackName^^}" ]] ; then
+		sed -i -e "s/${stackNamePrevious^^}_/${stackName^^}_/g" $destination
+		sed -i -e "s/${stackNamePrevious}/${stackName}/g" $destination
+	fi
+
+	echo "$(sed -n "/# START SETTINGS/,/# END SETTINGS/p" /vcw/pwd/${stack}/_stack/settings)" >> _stack/settings.tmp
+	if [[ "${stackNamePrevious^^}" != "${stackName^^}" ]] ; then
+		sed -i -e "s/${stackNamePrevious^^}_/${stackName^^}_/g" _stack/settings.tmp
+		sed -i -e "s/${stackNamePrevious}/${stackName}/g" _stack/settings.tmp
+	fi
+
+	if [[ -d /vcw/pwd/${stack}/_stack/configs ]] ; then
+		if [[ ! -d _stack/configs ]] ; then mkdir _stack/configs; fi
+		for f in /vcw/pwd/${stack}/_stack/configs/* ;
+		do
+			folderName=$(basename $f)
+			folderName="${folderName//$stackNamePrevious/$package}"
+			if [[ -d _stack/configs/${folderName} ]] ; then rm -rf _stack/configs/${folderName}; fi
+			mkdir _stack/configs/${folderName};
+			cp -r $f/* _stack/configs/${folderName}/
+		done
+	fi
+
+	if [[ -d /vcw/pwd/${stack}/_stack/volumes ]] ; then
+		if [[ ! -d _stack/volumes ]] ; then mkdir _stack/volumes; fi
+		for f in /vcw/pwd/${stack}/_stack/volumes/* ;
+		do
+			folderName=$(basename $f)
+			folderName="${folderName//$stackNamePrevious/$package}"
+			if [[ -d _stack/volumes/${folderName} ]] ; then rm -rf _stack/volumes/${folderName}; fi
+			mkdir _stack/volumes/${folderName};
+			cp -r $f/* _stack/volumes/${folderName}/
+		done
+	fi
+done;

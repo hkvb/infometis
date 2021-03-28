@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+(
+	export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_MODULE"
+	. executionplane-invoke "$0 $@"
+	selectedNode="${@: -1}"
+	if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	cd /vcw/pwd/${selectedNode}
+	imageTag=$(git describe --tags HEAD)
+
+	if [[ ! -f _module/configuration ]] ; then executionplane-error "Module configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	. set-config $selectedNode
+	if [[ $# -gt 1 ]] ; then command="$1"; else command="all"; fi
+	case $command in
+		all)
+			config-package $selectedNode
+			config-module
+			config-deploy $selectedNode
+			config-config
+		;;
+		exec)
+			shift;
+			config-exec $@
+		;;
+		package)
+			config-package $selectedNode
+		;;
+		module)
+			config-module
+		;;
+		deploy)
+			config-deploy $selectedNode
+		;;
+		config)
+			config-config
+		;;
+		volume)
+			stack=""
+			if [[ $# -gt 2 ]] ; then stack=$2; fi
+			config-volume $selectedNode $stack
+		;;
+		*)
+			executionplane-error "Method not recognised: $1."
+		;;
+	esac
+
+	cd /vcw/pwd
+	executionplane-complete
+)

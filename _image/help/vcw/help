@@ -1,0 +1,14 @@
+#
+#
+# infometis.base
+#
+# A infometis gives access to an API that consists of 7 sections: console, repo, config, build, release, deploy and run.
+# Not all infometiss require the full API for their operations.
+#
+# The base implementation is not used as a standalone infometis.
+# It implements base functionality that is used by the derived controplanes.
+# It provides full implementation for repo, build and release and partial implementation of config and console.
+# There is no implementation for deploy and run.
+#
+# Each to level API method implements the --info flag returning information relevant to the API method about the image.
+#

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+method="$1"
+selectedNode="$2"
+stack="$3"
+
+# create module overlay network - global
+if [[ "$method" == *"down"* ]] ; then
+  executionplane --silent docker network rm ${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay
+fi
+if [[ "$method" == *"up"* ]] ; then
+  executionplane --silent docker network create -d overlay ${VCW_STACK_GLOBAL_NETWORKGLOBAL}_overlay
+  executionplane --silent docker network create -d overlay ${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay
+fi
+
+# create module package volumes - on all nodes
+.vcw deploy module "local-$method" "$stack" "$selectedNode"

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+if [[ "$VCW_OS" == "container" ]] ; then .invoke  $@;
+else  .invoke  $@ > >( output-parser-tagged ) 2> >( output-parser-tagged ); wait-for-output-parser-tagged; fi

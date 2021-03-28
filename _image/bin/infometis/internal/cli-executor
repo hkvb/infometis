@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+shopt -s nullglob
+
+if [[ "${@: -1}" == "--help" ]] ; then _invoke $@;
+
+elif [[ "$1" == "console" ]] ; then	_invoke $@;
+
+else
+
+	selector="$(< ${VCW_CURRENT_CONSOLE_SELECTION})"
+
+	# DIRECT TARGET ONLY FOR THE MOMENT
+	# WILDCARD SELECTION WILL BE IMPLEMENTED LATER BASED ON FACET FEATURES
+	. _invoke $@ $selector;
+
+fi
+storedSelector=$(< ${VCW_CURRENT_CONSOLE_SELECTION})
+if [[ "$storedSelector" != "" ]] ; then
+  printf '\n%s@' "$storedSelector"
+fi

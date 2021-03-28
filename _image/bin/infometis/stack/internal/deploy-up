@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+selectedNode="$1"
+
+executionplane docker network create -d overlay  "${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay"
+executionplane docker network create -d overlay  "${VCW_STACK_GLOBAL_NETWORKGLOBAL}_overlay"
+
+if [[ "$VCW_STACK_GLOBAL_VOLUME_LIST" != "" ]] ; then
+	IFS=',' read -r -a volumes <<< "${VCW_STACK_GLOBAL_VOLUME_LIST}"
+	for volume in ${volumes[@]};
+	do
+		executionplane docker volume create $(echo "$volume" | envsubst)
+	done;
+fi
+
+IFS=',' read -r -a volumes <<< "${VCW_STACK_GLOBAL_VOLUME_INITIALISED}"
+for volumeSettings in ${volumes[@]};
+do
+	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
+	volumeDir=$(echo $volumeSettings | cut -d':' -f 2)
+	if [[ -d _stack/configs/$volumeName ]] ; then
+		for f in $(find _stack/configs/$volumeName ); do
+			if [[ -f $f ]] ; then cat $f | envsubst > ${f//configs/volumes};
+			elif [[ ! -d ${f//configs/volumes} ]] ; then mkdir ${f//configs/volumes}; fi
+		done
+	fi
+	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${volumeName}:${volumeDir} ${VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/$selectedNode/_stack/volumes/${volumeName}/* ${volumeDir}/
+done;
+
+IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACKNAMES}"
+for stackName in ${stackNames[@]};
+do
+	tmpfile=$(mktemp /tmp/docker-compose.yml.XXXXXX)
+	arguments="-c $tmpfile $stackName"
+	cat _stack/stacks/${stackName}.docker-compose.yml | envsubst > $tmpfile
+	cat $tmpfile
+	executionplane docker stack deploy --with-registry-auth $arguments
+	rm $tmpfile
+done;

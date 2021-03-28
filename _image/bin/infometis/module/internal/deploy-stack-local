@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+method="$1"
+stack="$2"
+
+# execute local deploy script
+if [[ "$method" == *"down"* ]] ; then
+  . _module/deploy-local-down "$stack"
+fi
+if [[ "$method" == *"up"* ]] ; then
+  . _module/deploy-local-up "$stack"
+fi

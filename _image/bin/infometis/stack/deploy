@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_STACK"
+. executionplane-invoke "$0 $@"
+selectedNode="${@: -1}"
+if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+cd /vcw/pwd/${selectedNode}
+subNode=$(echo $selectedNode | cut -d"/" -f3-)
+imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
+repoImageName=$(echo $imageName | cut -d"." -f1)
+imageTag=$(git describe --tags HEAD)
+
+if [[ $# -gt 1 ]] ; then command=$1; else command="up"; fi
+if [[ " up down " != *"$command"* ]]; then command="up"; fi
+
+if [[ ! -f _stack/settings.stack ]] ; then executionplane-error "Stack settings file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+export VCW_STACK_GLOBAL_URLPREFIX="vcw_stack"
+export VCW_STACK_GLOBAL_NETWORKLOCAL="vcw_stack"
+export VCW_STACK_GLOBAL_NETWORKGLOBAL="vcw_global"
+
+. _stack/settings.stack;
+export VCW_STACK_GLOBAL_STACKPREFIX="$VCW_STACK_GLOBAL_STACKNAMES"
+if [[ "$VCW_STACK_GLOBAL_STACKPREFIX" == *","* ]] ; then export VCW_STACK_GLOBAL_STACKPREFIX=$(echo ${VCW_STACK_GLOBAL_STACKPREFIX} | cut -d',' -f1); fi
+. _stack/settings.stack;
+
+deploy-${command} $selectedNode
+
+cd /vcw/pwd
+executionplane-complete

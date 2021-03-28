@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+(
+  export PATH="/vcw/bin/infometis/internal:$VCW_EXECUTIONPLANE_ORIGINALPATH"
+  . cli-executor "$(basename $0)" $@
+)

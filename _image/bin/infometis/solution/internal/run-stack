@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+action="$1"
+component="$2"
+stackSelector="$3"
+shift; shift; shift;
+
+if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+if [[ "$stackSelector" == "." ]] ; then stackSelector=""; fi
+if [[ "$stackSelector" != "" && "$stackSelector" != "_"* ]] ; then stackSelector=",$stackSelector"; fi
+
+cat $componentPath/_configuration/module-stacks | grep $action | grep "$stackSelector" | while read -r line ; do
+		IFS=',' read -r -a columns <<< "$line"
+		(
+		stacktype=${columns[0]}
+		package=${columns[1]}
+		stack=${columns[2]}
+		stackName="${VCW_STACK_MODULEPREFIX}__$stack"
+		export VCW_STACK_GLOBAL_STACKPREFIX="${VCW_STACK_MODULEPREFIX}__$package"
+		export VCW_STACK_GLOBAL_STACKPREFIX_CAPPED="${VCW_STACK_GLOBAL_STACKPREFIX}"
+		if (( ${#stackName} > 45 )) ; then
+			let "finish = ${#VCW_STACK_MODULEPREFIX} + 45 - ${#stackName}";
+			stackName="${VCW_STACK_MODULEPREFIX:0:finish}__X_${stack}";
+			export VCW_STACK_GLOBAL_STACKPREFIX_CAPPED="${VCW_STACK_MODULEPREFIX:0:finish}__X_$package";
+		fi;
+		if [[ " boot start " == *" $action"* ]] ; then
+			export VCW_STACK_GLOBAL_URLPREFIX="${VCW_STACK_MODULE_URLPREFIX}/${package}"
+			tmpfile=$(mktemp /tmp/docker-compose.yml.XXXXXX)
+			stackFolder=${componentPath}/_module/packages/$package
+			composeFile=${stackFolder}/_${stack}.docker-compose.yml
+			. $stackFolder/settings.package
+			. $stackFolder/settings
+			if [[ "$action" == "start" ]] ; then
+				interactive="${stack^^}_COMMAND_INTERACTIVE"
+				command="${stack^^}_COMMAND"
+				if [[ "${!interactive}" == "true" ]]; then export ${stack^^}_COMMAND="'.invoke $* '"; fi
+			fi
+			cat $composeFile | envsubst > $tmpfile
+			cat $tmpfile
+			executionplane  docker stack deploy --with-registry-auth -c $tmpfile "$stackName"
+			rm $tmpfile
+		elif [[ " shutdown stop " == *" $action"* ]] ; then
+			executionplane docker stack rm "$stackName"
+		fi
+		)
+done

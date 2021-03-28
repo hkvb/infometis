@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+(
+	export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_SOLUTION"
+	. executionplane-invoke "$0 $@"
+	selectedNode="${@: -1}"
+	if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	cd /vcw/pwd/${selectedNode}
+	imageTag=$(git describe --tags HEAD)
+
+	if [[ $# -gt 1 ]] ; then command="$1"; shift; else command="all"; fi
+	if [[ $# -gt 1 ]] ; then component="$1"; shift; fi
+	if [[ "$component" == "" ]] ; then component="."; fi
+
+	if [[ ! -f _solution/configuration ]] ; then executionplane-error "Solution configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+	if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+	if [[ ! -f ${componentPath}/_configuration/configuration ]] ; then executionplane-error "Solution component configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	. set-config $selectedNode
+	case $command in
+		all)
+			config module $component $selectedNode $selectedNode
+			config component $component $selectedNode $selectedNode
+			config solution . $selectedNode
+		;;
+		component)
+			config-component $selectedNode $component
+			component-child-axis $selectedNode $component config component
+		;;
+		module)
+			config-module $selectedNode $component
+			component-child-axis $selectedNode $component config module
+		;;
+		solution)
+			config-solution .
+		;;
+		*)
+			executionplane-error "Method not recognised: $1."
+		;;
+	esac
+
+	cd /vcw/pwd
+	executionplane-complete
+)

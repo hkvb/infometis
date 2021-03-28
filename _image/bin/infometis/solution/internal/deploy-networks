@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ "$component" == "." && "$method" == "networks-up" ]] ; then executionplane --silent docker network create -d overlay ${VCW_STACK_GLOBAL_NETWORKGLOBAL}_overlay; fi
+
+if [[ "$VCW_SOLUTON_HIDE_COMPONENT" != "true" ]] ; then
+  if [[ "$method" == "networks-down" ]] ; then executionplane --silent docker network rm ${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay;
+  else executionplane --silent docker network create -d overlay ${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay; fi
+fi

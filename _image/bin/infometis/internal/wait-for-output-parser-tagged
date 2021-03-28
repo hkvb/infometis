@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+if [[ "$VCW_OS" == "linux" ]] ; then
+  threshold=1
+else
+  threshold=0
+fi
+test="2"
+while (( $test > $threshold ))
+do
+  sleep 0.5
+  test=$(ps aux | grep -i /vcw/bin/infometis/internal/output-parser-tagged | wc -l)
+done

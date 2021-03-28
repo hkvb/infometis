@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+tmpfile=$(mktemp /tmp/settings.tmp.XXXXXX)
+cp _stack/settings $tmpfile
+
+DOLLAR="$"
+environment_module=$'#!/usr/bin/env bash\n\n# START CONFIGURATION\n'
+environment_module="${environment_module}export VCW_STACK_GLOBAL_PACKAGE_CONTECO=\"${VCW_SERVICE_ID}\"
+export VCW_STACK_GLOBAL_PACKAGE_TAG=\"${VCW_TAG}\"
+export VCW_STACK_GLOBAL_STACKNAMES=\"$VCW_STACK_GLOBAL_STACKNAMES\"
+export VCW_STACK_GLOBAL_BOOTSTACKS=\"$VCW_STACK_GLOBAL_BOOTSTACKS\"
+export VCW_STACK_GLOBAL_RUNSTACKS=\"$VCW_STACK_GLOBAL_RUNSTACKS\"
+export VCW_STACK_GLOBAL_VOLUME_LIST=\"$VCW_STACK_GLOBAL_VOLUME_LIST\"
+export VCW_STACK_GLOBAL_VOLUME_INITIALISED=\"$VCW_STACK_GLOBAL_VOLUME_INITIALISED\"
+# END CONFIGURATION
+
+"
+
+sed -i "/# START CONFIGURATION/,/# END CONFIGURATION/d" $tmpfile
+sed -i "/# START GLOBAL SETTINGS/,/# END GLOBAL SETTINGS/d" $tmpfile
+sed -i "/# START TOPLEVEL SETTINGS/,/# END TOPLEVEL SETTINGS/d" $tmpfile
+
+environment_other=$(grep export $tmpfile | grep -v _PORTS | grep -v _DEPLOY | grep -v _NETWORKS | grep -v _VOLUMES)
+if [[ $environment_other != "" ]] ; then
+	environment_other="
+$environment_other"
+fi
+environment_module="${environment_module}# START MODULE SETTINGS$environment_other
+# END MODULE SETTINGS
+
+"
+
+environment_volumes=$(grep _VOLUMES $tmpfile | grep -v _GLOBAL)
+intermediate=$(grep _VOLUMES_ $tmpfile | grep -v _GLOBAL | cut -d'"' -f 2 | tr '\n' '|')
+intermediate="${intermediate//|/: \{ \}, }"
+intermediate=$(echo $intermediate | sed 's/.$//')
+if [[ $environment_volumes != "" ]] ; then
+	environment_volumes="
+$environment_volumes"
+	environment_module="${environment_module}# START VOLUMES SETTINGS$environment_volumes
+export VCW_STACK_GLOBAL_VOLUMES=\"$intermediate\"
+# END VOLUMES SETTINGS
+
+"
+else
+	environment_module="${environment_module}# START VOLUMES SETTINGS
+# END VOLUMES SETTINGS
+
+"
+fi
+
+environment_ports=$(grep _PORTS $tmpfile)
+if [[ $environment_ports != "" ]] ; then
+	environment_ports="
+$environment_ports"
+fi
+environment_module="${environment_module}# START PORTS SETTINGS$environment_ports
+# END PORTS SETTINGS
+
+"
+environment_networks=$(grep _NETWORKS $tmpfile | grep -v _GLOBAL)
+if [[ $environment_networks != "" ]] ; then
+	environment_networks="
+$environment_networks"
+	environment_module="${environment_module}# START NETWORKS SETTINGS$environment_networks
+export VCW_STACK_GLOBAL_NETWORKS=\"${DOLLAR}{VCW_STACK_GLOBAL_NETWORKGLOBAL}_overlay: { external: true }\"
+# END NETWORKS SETTINGS
+
+"
+else
+	environment_module="${environment_module}# START NETWORKS SETTINGS
+# END NETWORKS SETTINGS
+
+"
+fi
+environment_deploy=$(grep _DEPLOY $tmpfile)
+if [[ $environment_deploy != "" ]] ; then
+	environment_deploy="
+$environment_deploy"
+fi
+environment_module="${environment_module}# START DEPLOY SETTINGS$environment_deploy
+# END DEPLOY SETTINGS
+
+"
+echo "$environment_module" > _stack/settings.stack
+rm $tmpfile
+
+chmod -R 777 _stack;

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+versionpart=$1
+rootPath=$2
+
+if [[ "$VCW_TAG_TYPE" 	!= "incremental" ]] ; then
+	executionplane-warning "Repository $VCW_TAG is not of type incremental: action ignored."
+	exit 0
+fi
+
+executionplane-info "increment-version $versionpart $rootPath $VCW_TAG"
+
+major=$( echo "$VCW_TAG" | cut -d "." -f 1 )
+major=${major#"v"}
+minor=$( echo "$VCW_TAG" | cut -d "." -f 2 )
+revision=$( echo "$VCW_TAG" | cut -d "." -f 3 )
+
+if [[ "$versionpart" == "major" ]] ; then
+	major=$(($major + 1))
+	minor="0"
+	revision="0"
+elif [[ "$versionpart" == "minor" ]] ; then
+	minor=$(($minor + 1))
+	revision="0"
+elif [[ "$versionpart" == "revision" ]] ; then
+	revision=$(($revision + 1))
+fi
+version="v$major.$minor.$revision"
+executionplane-info "Version increment: $VCW_TAG >>> $version"
+config-set-version $version $rootPath

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+selectedNode=$1
+imageName=$2
+imageTag=$3
+
+if [[ -f Dockerfile.external ]] ; then extension=".external"; fi
+if [[ -f Dockerfile${extension} ]] ; then
+
+  executionplane "--errors-only" docker build -t $imageName -f Dockerfile${extension} .
+  executionplane docker tag ${imageName} ${imageName}:${imageTag}
+  if [[ "${VCW_REGISTRY}" != "" ]] ; then
+    executionplane docker tag ${imageName} ${VCW_REGISTRY}$imageName
+    executionplane docker tag ${imageName} ${VCW_REGISTRY}${imageName}:${imageTag}
+  fi
+
+else executionplane-error "${selectedNode}/Dockerfile${extension}: File does not exist."; fi

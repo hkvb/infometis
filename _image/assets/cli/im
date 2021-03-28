@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker volume create --driver local --opt type=none --opt o=bind --opt device=$(pwd) vcw_infometis_repos > /dev/null
+#docker run -it -v /etc:/hostfs/etc:ro -v /var/run/docker.sock:/var/run/docker.sock -v vcw_infometis_repos:/vcw/pwd registry.vcweb.iot/hkvb/infometis --linux $@ > /dev/null
+docker run -it -v /etc:/hostfs/etc:ro -v /var/run/docker.sock:/var/run/docker.sock -v vcw_infometis_repos:/vcw/pwd registry.vcweb.iot/hkvb/infometis --container $@ > /dev/null
+#docker volume rm vcw_infometis_repos

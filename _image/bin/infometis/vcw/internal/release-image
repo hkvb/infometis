@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+imageName=$1
+imageTag=$2
+destination=$3
+
+case $destination in
+  --hub)
+    executionplane "--errors-only" docker image push ${imageName}
+    executionplane "--errors-only" docker image push ${imageName}:${imageTag}
+  ;;
+  *)
+    executionplane "--errors-only" docker image push ${VCW_REGISTRY}${imageName}
+    executionplane "--errors-only" docker image push ${VCW_REGISTRY}${imageName}:${imageTag}
+  ;;
+esac

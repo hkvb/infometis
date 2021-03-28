@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+selectedNode="${@: -1}"
+script="$1"
+executionplane-info "Script Path: $rootPath/$scriptPath"
+
+if [[ -f $rootPath/$scriptPath ]] ; then . scripts/$script "${@:2:$#-1}";
+else executionplane-error "$script: The script does not exist."; fi

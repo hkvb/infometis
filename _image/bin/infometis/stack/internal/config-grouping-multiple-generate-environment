@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+DOLLAR='$'
+
+# generate environment file
+environment_file=$'#!/usr/bin/env bash\n\n'
+environmentEntry=$(sed -n "/# START CONFIGURATION/,/# END CONFIGURATION/p" _stack/settings)
+environment_file="${environment_file}${environmentEntry}
+
+"
+environmentEntry=$(sed -n "/# START GLOBAL SETTINGS/,/# END GLOBAL SETTINGS/p" _stack/settings)
+environment_file="${environment_file}${environmentEntry}
+"
+
+sed -i '/#!\/usr\/bin\/env bash/d' _stack/settings.tmp
+IFS=',' read -r -a keys <<< "$(echo ${VCW_STACK_GLOBAL} | tr '\\' ' ' | tr '\n' ' ')"
+for key in ${keys[@]};
+do
+	sed -i "/${key:1}/d" _stack/settings.tmp
+	done;
+environment_file="${environment_file}$(cat _stack/settings.tmp)
+
+"
+
+intermediate=$(grep _VOLUMES_ _stack/settings.tmp | grep -v _GLOBAL | cut -d'"' -f 2 | tr '\n' '|')
+intermediate="${intermediate//|/: \{ \}, }"
+intermediate=$(echo $intermediate | sed 's/.$//')
+
+environment_file="${environment_file}# START TOPLEVEL SETTINGS
+"
+if [[ "$VCW_STACK_GLOBAL" != *"VCW_STACK_GLOBAL_VOLUMES"* ]] ; then
+	environment_file="${environment_file}export VCW_STACK_GLOBAL_VOLUMES=
+"
+fi
+if [[ "$VCW_STACK_GLOBAL" != *"VCW_STACK_GLOBAL_NETWORKS"* ]] ; then
+	environment_file="${environment_file}export VCW_STACK_GLOBAL_NETWORKS=\"${DOLLAR}{VCW_STACK_GLOBAL_NETWORKGLOBAL}_overlay: { external: true }\"
+"
+fi
+environment_file="${environment_file}# END TOPLEVEL SETTINGS
+"
+rm _stack/settings.tmp
+echo "$environment_file" > _stack/settings

@@ -1,0 +1,15 @@
+ARG  VCW_TAG=1.0.0
+ARG  VCW_TAG_BASH=5.0.18
+FROM hkvb/bash.wrapper:${VCW_TAG_BASH}
+
+RUN apk update && apk add docker && apk add git && apk add inotify-tools && apk add nano && apk add curl && rm -rf /var/cache/apk/*
+
+LABEL co.vcweb.schema-version="1.0" \
+      co.vcweb.label="hkvb/infometis.base - External Build" \
+      co.vcweb.description="Base Infometis infometisimage." \
+      co.vcweb.realm="hkvb" \
+      co.vcweb.library="infometis" \
+      co.vcweb.image="infometis" \
+      co.vcweb.flavor="base" \
+      co.vcweb.tag="${VCW_TAG}" \
+      co.vcweb.maintainer="vcw@vcweb.co"

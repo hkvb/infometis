@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+IFS=$'\n' read -d '' -r -a volumes < _module/module-volumes-initialised
+for volumeSettings in ${volumes[@]};
+do
+	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
+	if [[ -d _module/configs/$volumeName ]] ; then
+		for f in $(find _module/configs/$volumeName ); do
+			if [[ -f $f ]] ; then cat $f | envsubst > ${f//configs/volumes};
+			elif [[ ! -d ${f//configs/volumes} ]] ; then mkdir ${f//configs/volumes}; fi
+		done
+	fi
+done;

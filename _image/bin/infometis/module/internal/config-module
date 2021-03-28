@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+shopt -s nullglob
+
+# reset module settings files
+if [[ -f _module/module-stacks.module ]] ; then rm _module/module-stacks.module; fi
+if [[ -f _module/module-volumes ]] ; then rm _module/module-volumes; fi
+if [[ -f _module/module-volumes-initialised ]]; then rm _module/module-volumes-initialised; fi
+
+for packageFolder in _module/packages/*
+do
+
+	package=$(basename $packageFolder)
+	export VCW_STACK_GLOBAL_STACKPREFIX="${VCW_STACK_MODULEPREFIX}__$package"
+	export VCW_STACK_GLOBAL_URLPREFIX="${VCW_STACK_MODULE_URLPREFIX}/$package"
+	(
+		. _module/packages/${package}/settings
+
+		IFS=',' read -r -a stacks <<< "${VCW_STACK_GLOBAL_BOOTSTACKS}"
+		for stack in ${stacks[@]}; do echo "boot/shutdown,$package,$stack" >> _module/module-stacks.module; done
+
+		IFS=',' read -r -a stacks <<< "${VCW_STACK_GLOBAL_RUNSTACKS}"
+		for stack in ${stacks[@]}; do echo "start/stop,$package,$stack" >> _module/module-stacks.module; done
+
+		IFS=',' read -r -a volumes <<< "${VCW_STACK_GLOBAL_VOLUME_LIST}"
+		for volume in ${volumes[@]}; do echo "${volume//__/&}" | cut -d'&' -f2 >> _module/module-volumes; done
+
+		IFS=',' read -r -a volumes <<< "${VCW_STACK_GLOBAL_VOLUME_INITIALISED}"
+		for volumeSettings in ${volumes[@]}; do echo "${volumeSettings//__/&}" | cut -d'&' -f2 >> _module/module-volumes-initialised; done
+	)
+
+done;
+
+touch _module/module-stacks.module
+touch _module/module-volumes
+touch _module/module-volumes-initialised
+if [[ ! -f _module/module-stacks ]] ; then cp _module/module-stacks.module _module/module-stacks; fi

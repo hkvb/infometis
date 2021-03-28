@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+component=$1
+
+if [[ "$component" == "." ]] ; then
+
+  componentPath="_solution";
+  prefix=""
+  echo $'#!/usr/bin/env bash\n\n' > _solution/_infometis/deploy-volumes
+  echo $'#!/usr/bin/env bash\n\n' > _solution/_infometis/remove-volumes
+  chmod +x ${componentPath}/_infometis/deploy-volumes
+  chmod +x ${componentPath}/_infometis/remove-volumes
+  echo "
+  ######################################################
+  # THIS FILE IS AUTO-GENERATED - PLEASE DO NOT CHANGE #
+  ######################################################
+" >> _solution/_infometis/deploy-volumes
+  echo "
+  ######################################################
+  # THIS FILE IS AUTO-GENERATED - PLEASE DO NOT CHANGE #
+  ######################################################
+" >> _solution/_infometis/remove-volumes
+
+else
+
+  componentPath="_solution/${component}";
+  prefix="$component/"
+
+fi
+
+cat ${componentPath}/_configuration/deploy-local-down >> _solution/_infometis/remove-volumes
+cat ${componentPath}/_configuration/deploy-local-up >> _solution/_infometis/deploy-volumes
+
+for folder in ${componentPath}/*
+do
+  if [[ -d $folder ]] ;  then
+    folderName="$(basename $folder)"
+    if [[ "$folderName" != "_"* ]] ; then config-solution ${prefix}${folderName};fi
+  fi
+done

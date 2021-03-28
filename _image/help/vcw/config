@@ -1,0 +1,22 @@
+#
+#
+# config API - infometis.base
+# Use the --info flag to get config specific container image information.
+#
+# The config API contains methods that configure the repository.
+#
+# config build <repository selector>
+# The build option regenerates the Dockerfile.static from the environment settings.
+# Dockerfile.static allows the image to be build with a simple docker build.
+#
+# config increment [revision/minor/major] <repository selector>
+# The increment option increments the version number of the format vx.y.z
+#
+# config remove-crs <repository selector>
+# This method removes Windows CRs from repository file without file extension or .md and .static file extension.
+# Only required when working on Windows.
+#
+# config set-version <repository selector>
+# This build option assigns a specific value to the VCW_TAG environment variable.
+#
+#

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+(
+	export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_MODULE"
+	. executionplane-invoke "$0 $@"
+	selectedNode="${@: -1}"
+	if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	cd /vcw/pwd/${selectedNode}
+	imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
+	imageTag=$(git describe --tags HEAD)
+
+	if [[ ! -f _module/configuration ]] ; then executionplane-error "Module configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	. set-config $selectedNode
+	method="$1"; shift;
+  if [[ $# -gt 1 ]] ; then stack=$1; shift; else stack="."; fi
+
+	case $method in
+		boot|shutdown|start|stop)
+			run-stack $imageName $method $stack
+		;;
+		pause)
+			executionplane-error "Method not implemented: $1."
+		;;
+		reboot)
+			run shutdown $stack $@
+			run boot $stack $@
+		;;
+		restart)
+			run stop $stack $@
+			run start $stack $@
+		;;
+		resume)
+			executionplane-error "Method not implemented: $1."
+		;;
+		*)
+			executionplane-error "invalid API method: $method"
+		;;
+	esac
+
+	cd /vcw/pwd
+	executionplane-complete
+)

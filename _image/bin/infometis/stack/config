@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_STACK"
+. executionplane-invoke "$0 $@"
+selectedNode="${@: -1}"
+if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+cd /vcw/pwd/${selectedNode}
+imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
+imageTag=$(git describe --tags HEAD)
+
+if [[ ! -f _stack/settings ]] ; then executionplane-error "Stack settings file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+(
+	. _stack/settings;
+	stackType="single"
+  if [[ "$VCW_STACK_GLOBAL_STACK_STACKS" != "" ]]; then stackType="grouping";
+	elif [[ "$VCW_STACK_GLOBAL_STACKS" == *","* ]]; then stackType="multiple"; fi
+
+	export VCW_SERVICE_ID="$selectedNode"
+	export VCW_TAG="$imageTag"
+
+	executionplane rm _stack/stacks/*
+	case $stackType in
+		single)
+			config-single-generate-docker-compose
+			config-all-generate-settings-stack
+		;;
+		grouping)
+		  config-grouping-generate-stack-templates
+			config-grouping-multiple-generate-environment
+			config-grouping-generate-docker-compose
+			config-all-generate-settings-stack
+		;;
+		multiple)
+			config-multiple-gather-stacks
+			config-grouping-multiple-generate-environment
+			config-multiple-generate-docker-compose
+			config-all-generate-settings-stack
+		;;
+		*)
+			executionplane-error "Stack type not recognised: $1."
+		;;
+	esac
+)
+cd /vcw/pwd
+executionplane-complete

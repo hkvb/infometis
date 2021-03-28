@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+selectedNode="$1"
+component="$2"
+shift; shift;
+while [[ "$1" == "--arg:"* ]] ; do
+  arguments="$arguments ${1:6}";
+  shift;
+done;
+
+for folder in ./*
+do
+  if [[ -d $folder ]] ;  then
+    folderName="$(basename $folder)"
+    if [[ "$folderName" != "_"* ]] ; then
+      if [[ "$component" == "." ]] ; then subcomponent=$folderName; else subcomponent="$component/$folderName"; fi
+      $@ $subcomponent $arguments $selectedNode;
+    fi;
+  fi
+done

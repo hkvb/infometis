@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# $1 platform
+
+export VCW_OS="container";
+if [[ "$1" == "--"* ]] ; then
+	if [[ "$1" == "--windows" ]] ; then export VCW_OS="windows";
+	elif [[ "$1" == "--linux" ]] ; then export VCW_OS="linux"; fi
+	shift
+fi
+
+# parse settings: REGISTRY
+if [[ "$1" == "--registry="* ]] ; then
+	export VCW_REGISTRY="$(echo "$1" | cut -d'=' -f  2)"
+	shift
+fi
+
+hostname="${VCW_HOSTNAME}"
+if [[ "$hostname" == "host.docker.internal" ]] ; then
+	hostname="linuxkit"
+fi
+export PS1="${hostname}$ "
+
+export VCW_CURRENT_CONSOLE_SELECTION="/vcw/pwd/console-selection-${VCW_EXECUTIONTAG}"
+if [[ ! -f "${VCW_CURRENT_CONSOLE_SELECTION}" ]] ; then
+	echo "" > "${VCW_CURRENT_CONSOLE_SELECTION}";
+	export VCW_CURRENT_CONSOLE_SELECTION_DELETE="true";
+fi;
+
+if [[ "$@" == *"@"* ]] ; then
+	echo "$@" | tr "@" "\n" > commands.sh
+	bash commands.sh
+	rm commands.sh
+else bash $@; fi
+
+if [[ "$VCW_CURRENT_CONSOLE_SELECTION_DELETE" == "true" ]] ; then rm "${VCW_CURRENT_CONSOLE_SELECTION}"; fi;

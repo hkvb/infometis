@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+(
+	export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_SOLUTION"
+	. executionplane-invoke "$0 $@"
+	selectedNode="${@: -1}"
+	if [[ ! -d /vcw/pwd/${selectedNode} ]]; then executionplane-error "${selectedNode}: Does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	cd /vcw/pwd/${selectedNode}
+	imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
+	imageTag=$(git describe --tags HEAD)
+
+	if [[ " up down downup local-up local-down local-downup networks-up networks-down " != *"$1"* ]] ; then method="up"; else method="$1"; shift; fi
+	if [[ $# -gt 1 && "$1" != "-"* ]] ; then component="$1"; shift; fi
+	if [[ "$component" == "" ]] ; then deployScope="infometis"; component="."; fi
+
+	if [[ ! -f _solution/configuration ]] ; then executionplane-error "Solution configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+	if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+	if [[ ! -f ${componentPath}/_configuration/configuration ]] ; then executionplane-error "Solution component configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+
+	. set-config
+	if [[ "$deployScope" == "infometis" && " up down downup " == *"$method"* && "$VCW_SOLUTION_CUSTOM_IMPLEMENTATION_TRIGGERED" != "true" && "$1" != "--no-custom" ]] ; then
+
+		export VCW_SOLUTION_CUSTOM_IMPLEMENTATION_TRIGGERED="true"
+  	if [[ "$method" == "down"* ]] ; then . ${componentPath}/_infometis/remove $@;
+		else . ${componentPath}/_infometis/deploy $@; fi
+
+  else
+		case $method in
+			down|downup|up)
+				if [[ "$method" == *"down"* ]] ; then
+#					deploy local-down $component $selectedNode
+					infometis-service deploy solution local-down $component $selectedNode
+					if [[ "$component" == "." ]] ; then deploy networks-down $selectedNode; fi
+				fi
+				if [[ "$method" == *"up"* ]] ; then
+					if [[ "$component" == "." ]] ; then deploy networks-up $selectedNode; fi
+					infometis-service deploy solution local-up $component $selectedNode
+#					deploy local-up $component $selectedNode
+				fi
+			;;
+			networks-up|networks-down)
+				 . deploy-networks $method $component;
+				 component-child-axis $selectedNode $component deploy $method
+			;;
+			local-down|local-downup|local-up)
+				if [[ "$method" == *"down"* ]] ; then if [[ "$deployScope" == "infometis" ]] ; then . ${componentPath}/_infometis/remove-volumes; else . ${componentPath}/_configuration/deploy-local-down; fi; fi
+				if [[ "$method" == *"up"* ]] ; then if [[ "$deployScope" == "infometis" ]] ; then . ${componentPath}/_infometis/deploy-volumes;	else . ${componentPath}/_configuration/deploy-local-up; fi; fi
+			;;
+			*)
+				executionplane-error "invalid API method: $method"
+			;;
+		esac
+	fi
+	cd /vcw/pwd
+	executionplane-complete
+
+)
