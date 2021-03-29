@@ -9,19 +9,9 @@
   imageName=$(echo $selectedNode | cut -d"/" -f1)/$(echo $selectedNode | cut -d"/" -f2- | tr '/' '.')
   imageTag=$(git describe --tags HEAD)
 
-  case $1 in
-    module)
-      shift;
-  		.module run $@
-  	;;
-    solution)
-      shift;
-  		.solution run $@
-  	;;
-		*)
-			executionplane-error "Method not recognised: $1."
-		;;
-	esac
+  target="$1"; shift;
+  .${target} run $@
+
   cd /vcw/pwd
   executionplane-complete
 )

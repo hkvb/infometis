@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 (
   export PATH="/vcw/bin/infometis/internal:$VCW_EXECUTIONPLANE_ORIGINALPATH"
-  . cli-executor "$(basename $0)" $@
+  if [[ "$1" != "" && " stack module solution " == *"$1"* ]]; then api="$1"; shift; else api="solution"; fi
+  . cli-executor run "$api" $@
 )

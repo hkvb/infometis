@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 (
   export PATH="/vcw/bin/infometis/internal:$VCW_EXECUTIONPLANE_ORIGINALPATH"
-  if [[ " stack module solution " == *"$1"* ]]; then api="$1"; shift; fi
+  if [[ "$1" != "" && " stack module solution " == *"$1"* ]]; then api="$1"; shift; else api="solution"; fi
   . cli-executor deploy $api down $@
   . cli-executor deploy $api $@
 )
