@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-source=_stack/stacks/${VCW_STACK_GLOBAL_STACKNAMES}.docker-compose.yml.tmp
-destination=_stack/stacks/${VCW_STACK_GLOBAL_STACKNAMES}.docker-compose.yml
-
-cat $source | envsubst "$VCW_STACK_GLOBAL"	> $destination
-
-rm $source

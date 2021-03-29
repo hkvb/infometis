@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 name=$(create-random)
-executionplane docker service create --with-registry-auth --name "infometis-$name" -d --mode global --restart-condition none --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock --mount type=volume,source=vcw_infometis_repos,destination=/vcw/pwd ${VCW_REGISTRY}${VCW_REALM}/infometis.${VCW_FLAVOR} --executiontag "$VCW_EXECUTIONTAG" .invoke $@
+executionplane docker service create --with-registry-auth --name "infometis-$name" -d --mode global --restart-condition none --mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock --mount type=volume,source=vcw_infometis_repos,destination=/vcw/pwd ${VCW_REGISTRY}${VCW_REALM}/infometis --executiontag "$VCW_EXECUTIONTAG" .invoke $@
 continue="true"
 while [[ "true" == "$continue" ]] ;
 do

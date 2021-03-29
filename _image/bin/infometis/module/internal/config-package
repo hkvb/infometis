@@ -6,6 +6,11 @@ selectedNode="$1"
 if [[ ! -d _module/packages ]] ; then mkdir _module/packages; chmod -R 777 _module/packages; fi
 for f in _module/packages/* ; do if [[ "${VCW_MODULE_PACKAGES}" != *"$(basename $f):"* ]] ; then rm -rf $f; fi; done
 
+configurationHeader=$'#!/usr/bin/env bash\n\n'
+configurationBlock=$(sed -n "/# START MODULE CONFIGURATION/,/# END MODULE CONFIGURATION/p" _module/configuration)
+echo "$configurationHeader $configurationBlock" > _module/configuration
+echo "" > _module/configuration.module
+
 if [[ ! -d _module/import ]] ; then mkdir _module/import; chmod -R 777 _module/import; fi
 IFS=',' read -r -a modulePackages <<< "${VCW_MODULE_PACKAGES}"
 for packageConfig in ${modulePackages[@]};
@@ -26,7 +31,12 @@ do
 		. _module/import/${package}/settings.stack
 		oldPackage=$(echo "${VCW_STACK_GLOBAL_STACKNAMES}" | cut -d',' -f1)
 
-		# settings files
+		# configuration & settings files
+		cp _module/import/${package}/configuration _module/packages/${package}/configuration
+		configurationBlock=$(sed -n "/# START CONFIGURATION/,/# END CONFIGURATION/p" _module/packages/${package}/configuration)
+		configurationBlock="${configurationBlock//export CONFIGURATION_/export ${package^^}_}"
+		echo "$configurationBlock" >> _module/configuration.module
+		sed -i -e "s/CONFIGURATION_MODULE_/${package^^}_MODULE_/g" _module/import/${package}/settings.stack
 		sed -i -e "s/${oldPackage^^}_/${package^^}_/g" _module/import/${package}/settings.stack
 		sed -i -e "s/${oldPackage}/${package}/g" _module/import/${package}/settings.stack
 		cp _module/import/${package}/settings.stack _module/packages/${package}/settings.package
@@ -53,6 +63,9 @@ do
 			newItemName="$package${itemName:$prefix}"
 			if [[ _module/configs/_packages/$newItemName ]] ; then rm -rf _module/configs/_packages/$newItemName; fi
 			mv  _module/import/$package/configs/$itemName _module/configs/_packages/$newItemName
+			for f in $(find _module/configs/_packages/$newItemName ); do
+				if [[ -f $f ]] ; then sed -i -e "s/CONFIGURATION_MODULE_/${package^^}_MODULE_/g" $f; fi
+			done
 			if [[ ! -d _module/configs/$newItemName ]] ; then cp -r _module/configs/_packages/$newItemName _module/configs/$newItemName; fi
 	  done
 		for f in _module/import/$package/volumes/*
@@ -63,9 +76,12 @@ do
 			newItemName="$package${itemName:$prefix}"
 			if [[ _module/volumes/_packages/$newItemName ]] ; then rm -rf _module/volumes/_packages/$newItemName; fi
 			mv  _module/import/$package/volumes/$itemName _module/volumes/_packages/$newItemName
-			if [[ ! -d _module/volumes/$newItemName ]] ; then cp -r _module/volumes/_packages/$newItemName _module/volumes/$newItemName; fi
 	  done
 	)
 done;
+echo "" >> _module/configuration
+cat _module/configuration.module | grep export >> _module/configuration
+echo "" >> _module/configuration
+rm _module/configuration.module
 chmod -R 777 _module/*
 rm -rf _module/import

@@ -21,7 +21,7 @@ export VCW_STACK_GLOBAL_NETWORKGLOBAL="vcw_global"
 
 . _stack/settings.stack;
 export VCW_STACK_GLOBAL_STACKPREFIX="$VCW_STACK_GLOBAL_STACKNAMES"
-if [[ "$VCW_STACK_GLOBAL_STACKPREFIX" == *","* ]] ; then export VCW_STACK_GLOBAL_STACKPREFIX=$(echo ${VCW_STACK_GLOBAL_STACKPREFIX} | cut -d',' -f1); fi
+. _stack/configuration;
 . _stack/settings.stack;
 
 deploy-${command} $selectedNode
