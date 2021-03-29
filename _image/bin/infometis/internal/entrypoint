@@ -11,7 +11,7 @@ if [[ "$(docker container ls )" != "" ]] ; then
   do
     sleep 1
   done;
-  imagePrefix="$(docker container ls | grep hkvb/infometis | awk '{ print $2 }' FS=' ' | awk '{ print $1 }' FS='/infometis.' )"
+  imagePrefix="$(docker container ls | grep hkvb/infometis | awk '{ print $2 }' FS=' ' | awk '{ print $1 }' FS='/infometis' )"
   registry="$( echo "${imagePrefix/${VCW_REALM}/}" | cut -d$'\n' -f 1)"
   export VCW_REGISTRY="$registry"
 fi
