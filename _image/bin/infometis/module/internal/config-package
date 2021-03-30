@@ -37,8 +37,8 @@ do
 		configurationBlock="${configurationBlock//export CONFIGURATION_/export ${package^^}_}"
 		echo "$configurationBlock" >> _module/configuration.module
 		sed -i -e "s/CONFIGURATION_MODULE_/${package^^}_MODULE_/g" _module/import/${package}/settings.stack
-		sed -i -e "s/${oldPackage^^}_/${package^^}_/g" _module/import/${package}/settings.stack
-		sed -i -e "s/${oldPackage}/${package}/g" _module/import/${package}/settings.stack
+		sed -i -e "s/VCW_STACK_${oldPackage^^}_/${package^^}_/g" _module/import/${package}/settings.stack
+		sed -i -e "s/vcw_stack_${oldPackage}/${package}/g" _module/import/${package}/settings.stack
 		cp _module/import/${package}/settings.stack _module/packages/${package}/settings.package
 		if [[ ! -f _module/packages/${package}/settings ]] ; then cp _module/import/${package}/settings.stack _module/packages/${package}/settings; fi
 
@@ -47,9 +47,9 @@ do
 		for stackName in ${stackNames[@]};
 		do
 			newStackName=$(echo "$stackName" | sed "s/${oldPackage}/${package}/g")
-			sed -i -e "s/${stackName^^}_/${newStackName^^}_/g" _module/import/${package}/stacks/${stackName}.docker-compose.yml
-			sed -i -e "s/${stackName}_/${newStackName}_/g" _module/import/${package}/stacks/${stackName}.docker-compose.yml
-			cp _module/import/${package}/stacks/${stackName}.docker-compose.yml _module/packages/${package}/_${newStackName}.docker-compose.yml
+			sed -i -e "s/VCW_STACK_${stackName^^}_/${newStackName^^}_/g" _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml
+			sed -i -e "s/vcw_stack_${stackName}_/${newStackName}_/g" _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml
+			cp _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml _module/packages/${package}/_${newStackName}.docker-compose.yml
 		done;
 
 		# configs and volumes folders

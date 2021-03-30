@@ -23,7 +23,7 @@ do
 			elif [[ ! -d ${f//configs/volumes} ]] ; then mkdir ${f//configs/volumes}; fi
 		done
 	fi
-	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${volumeName}:${volumeDir} ${VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/$selectedNode/_stack/volumes/${volumeName}/* ${volumeDir}/
+	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${volumeName}:${volumeDir} ${VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/$selectedNode/_stack/volumes/${volumeName:10}/* ${volumeDir}/
 done;
 
 IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACKNAMES}"
@@ -31,7 +31,7 @@ for stackName in ${stackNames[@]};
 do
 	tmpfile=$(mktemp /tmp/docker-compose.yml.XXXXXX)
 	arguments="-c $tmpfile $stackName"
-	cat _stack/stacks/${stackName}.docker-compose.yml | envsubst > $tmpfile
+	cat _stack/stacks/vcw_stack_${stackName}.docker-compose.yml | envsubst > $tmpfile
 	cat $tmpfile
 	executionplane docker stack deploy --with-registry-auth $arguments
 	rm $tmpfile

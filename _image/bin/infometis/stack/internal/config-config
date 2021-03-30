@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 shopt -s nullglob
 
-for f in $(find _stack/configs ); do
+if [[ -d _stack/configs ]]; then
+	for f in $(find _stack/configs ); do
 
-	if [[ -f $f ]] ; then cat $f | envsubst > ${f//configs/volumes};
-	elif [[ ! -d ${f//configs/volumes} ]] ; then mkdir ${f//configs/volumes}; fi
+		if [[ -f $f ]] ; then cat $f | envsubst > ${f//configs/volumes};
+		elif [[ ! -d ${f//configs/volumes} ]] ; then mkdir ${f//configs/volumes}; fi
 
-done;
+	done;
+fi
