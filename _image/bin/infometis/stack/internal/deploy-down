@@ -4,7 +4,7 @@ selectedNode="$1"
 IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACKNAMES}"
 for stackName in ${stackNames[@]};
 do
-	executionplane docker stack remove  "$stackName"
+	executionplane docker stack remove  "vcw_stack_$stackName"
 done;
 
 executionplane docker network rm  "${VCW_STACK_GLOBAL_NETWORKLOCAL}_overlay"
