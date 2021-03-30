@@ -15,7 +15,7 @@ if [[ "$1" == "--"* ]] ; then
 		for f in /vcw/assets/cli/*;
 		do
   		filename=$(basename $f)
-			cat $f | envsubst > /vcw/pwd/$filename;
+			cat $f | envsubst '$VCW_REGISTRY' > /vcw/pwd/$filename;
 		done;
 		chmod 755 /vcw/pwd/*
 		echo "CLI files extracted.";
