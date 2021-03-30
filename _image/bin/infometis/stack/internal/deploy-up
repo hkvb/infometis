@@ -30,7 +30,7 @@ IFS=',' read -r -a stackNames <<< "${VCW_STACK_GLOBAL_STACKNAMES}"
 for stackName in ${stackNames[@]};
 do
 	tmpfile=$(mktemp /tmp/docker-compose.yml.XXXXXX)
-	arguments="-c $tmpfile $stackName"
+	arguments="-c $tmpfile vcw_stack_$stackName"
 	cat _stack/stacks/vcw_stack_${stackName}.docker-compose.yml | envsubst > $tmpfile
 	cat $tmpfile
 	executionplane docker stack deploy --with-registry-auth $arguments
