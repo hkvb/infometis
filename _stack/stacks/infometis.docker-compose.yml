@@ -1,0 +1,25 @@
+---
+version: '3'
+services:
+
+# START SERVICE hkvb/infometis
+  infometis:
+    image: ${VCW_REGISTRY}hkvb/infometis.base:1.0.0
+    environment: [${INFOMETIS_ENVIRONMENT}]
+    command: [${INFOMETIS_COMMAND}]
+    volumes: [${INFOMETIS_VOLUMES}]
+    ports: [${INFOMETIS_PORTS}]
+    networks: [${INFOMETIS_NETWORKS}]
+    deploy:
+      mode: ${INFOMETIS_DEPLOY_MODE}
+      resources:
+        limits:
+          memory: '${INFOMETIS_DEPLOY_RESOURCES_LIMITS_MEMORY}'
+        reservations:
+          memory: '${INFOMETIS_DEPLOY_RESOURCES_RESERVATIONS_MEMORY}'
+${INFOMETIS_COMPOSE_EXTENSIONS}
+# END SERVICE hkvb/infometis
+
+networks: {}
+volumes: {vcw_infometis_repos: { external: true }}
+${VCW_STACK_GLOBAL_COMPOSE_EXTENSIONS}

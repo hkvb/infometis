@@ -100,7 +100,7 @@
       if [[ "$port" == "" ]] ; then
         port="5000"
       fi
-      executionplane docker run -d -p ${port}:5000 --restart=always --name hkvb_registry_base_2 -v hkvb_registry_base_2_data:/var/lib/registry ${VCW_REGISTRY}hkvb/registry.base:2
+      executionplane docker run -d -p ${port}:5000 --restart=always --name hkvb_registry_base_2 -v hkvb_registry_base_2_data:/var/lib/registry ${VCW_REGISTRY}registry:2
   	;;
     stop-registry)
       executionplane docker container rm --force hkvb_registry_base_2
