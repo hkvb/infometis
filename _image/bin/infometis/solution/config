@@ -13,8 +13,7 @@
 	if [[ "$component" == "" ]] ; then component="."; fi
 
 	if [[ ! -f _solution/configuration ]] ; then executionplane-error "Solution configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
-	if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
-	if [[ ! -f ${componentPath}/_configuration/configuration ]] ; then executionplane-error "Solution component configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
+	if [[ ! -f ${component}/_solution/_configuration/configuration ]] ; then executionplane-error "Solution component configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
 
 	. set-config $selectedNode
 	case $command in

@@ -14,7 +14,7 @@
 	if [[ "$component" == "" ]] ; then deployScope="infometis"; component="."; fi
 
 	if [[ ! -f _solution/configuration ]] ; then executionplane-error "Solution configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
-	if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+	componentPath="${component}/_solution";
 	if [[ ! -f ${componentPath}/_configuration/configuration ]] ; then executionplane-error "Solution component configuration file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
 
 	. set-config
@@ -29,12 +29,12 @@
 			down|downup|up)
 				if [[ "$method" == *"down"* ]] ; then
 #					deploy local-down $component $selectedNode
-					infometis-service deploy solution local-down $component $selectedNode
+					if [[ "$deployScope" == "infometis" ]] ; then infometis-service deploy solution local-down; else infometis-service deploy solution local-down $component; fi
 					if [[ "$component" == "." ]] ; then deploy networks-down $selectedNode; fi
 				fi
 				if [[ "$method" == *"up"* ]] ; then
 					if [[ "$component" == "." ]] ; then deploy networks-up $selectedNode; fi
-					infometis-service deploy solution local-up $component $selectedNode
+					if [[ "$deployScope" == "infometis" ]] ; then infometis-service deploy solution local-up; else infometis-service deploy solution local-up $component; fi
 #					deploy local-up $component $selectedNode
 				fi
 			;;

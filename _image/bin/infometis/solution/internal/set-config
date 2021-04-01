@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 solution=$(echo "$1" | tr '/' '_')
 
-if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
-
 DOLLAR='$'
-. ${componentPath}/_configuration/configuration;
+. ${component}/_solution/_configuration/configuration;
 if [[ "$component" != "." ]] ; then
   if [[ "$VCW_SOLUTON_HIDE_COMPONENT" == "true" ]] ; then
     suffix="$(dirname "/$component" | tr '/' '_')"
@@ -29,4 +27,4 @@ else
 fi
 
 . _solution/configuration
-. ${componentPath}/_configuration/configuration;
+. ${component}/_solution/_configuration/configuration;

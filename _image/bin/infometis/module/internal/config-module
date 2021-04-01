@@ -16,10 +16,10 @@ do
 		. _module/packages/${package}/settings
 
 		IFS=',' read -r -a stacks <<< "${VCW_STACK_GLOBAL_BOOTSTACKS}"
-		for stack in ${stacks[@]}; do echo "boot/shutdown,$package,$stack" >> _module/module-stacks.module; done
+		for stack in ${stacks[@]}; do echo "boot/shutdown,$package" >> _module/module-stacks.module; done
 
 		IFS=',' read -r -a stacks <<< "${VCW_STACK_GLOBAL_RUNSTACKS}"
-		for stack in ${stacks[@]}; do echo "start/stop,$package,$stack" >> _module/module-stacks.module; done
+		for stack in ${stacks[@]}; do echo "start/stop,$package" >> _module/module-stacks.module; done
 
 		IFS=',' read -r -a volumes <<< "${VCW_STACK_GLOBAL_VOLUME_LIST}"
 		for volume in ${volumes[@]}; do echo "${volume//__/&}" | cut -d'&' -f2 >> _module/module-volumes; done
@@ -29,8 +29,8 @@ do
 	)
 
 done;
-
 touch _module/module-stacks.module
 touch _module/module-volumes
 touch _module/module-volumes-initialised
 if [[ ! -f _module/module-stacks ]] ; then cp _module/module-stacks.module _module/module-stacks; fi
+chmod 777 _module/*

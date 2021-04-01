@@ -2,12 +2,12 @@
 selectedNode="$1"
 volumePrefix="${VCW_STACK_MODULEPREFIX}__$2"
 
-IFS=$'\n' read -d '' -r -a volumes < _module/modeco/module-volumes-initialised
+IFS=$'\n' read -d '' -r -a volumes < _module/module-volumes-initialised
 for volumeSettings in ${volumes[@]};
 do
 	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
 	volumeDir=$(echo $volumeSettings | cut -d':' -f 2)
 	if [[ "${VCW_STACK_MODULEPREFIX}__$volumeName"  == "$volumePrefix"* ]] ; then
-		executionplane --silent docker run -v ${VCW_STACK_MODULEPREFIX}__${volumeSettings} -v vcw_infometis_repos:/vcw/pwd ${VCW_REGISTRY}hkvb/infometis console tar /vcw/pwd/${selectecNode}/_module/volumes/${volumeName}.tar ${volumeDir}
+		executionplane --silent docker run -v "${VCW_STACK_MODULEPREFIX}__${volumeSettings}" -v vcw_infometis_repos:/vcw/pwd "${VCW_REGISTRY}hkvb/infometis" console tar "/vcw/pwd/$1/_module/volumes/${volumeName}.tar" "${volumeDir}"
 	fi
 done;

@@ -4,7 +4,7 @@ component="$2"
 stackSelector="$3"
 shift; shift; shift;
 
-if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+componentPath="${component}/_solution";
 if [[ "$stackSelector" == "." ]] ; then stackSelector=""; fi
 if [[ "$stackSelector" != "" && "$stackSelector" != "_"* ]] ; then stackSelector=",$stackSelector"; fi
 
@@ -12,20 +12,19 @@ cat $componentPath/_configuration/module-stacks | grep $action | grep "$stackSel
 		IFS=',' read -r -a columns <<< "$line"
 		(
 		stacktype=${columns[0]}
-		package=${columns[1]}
-		stack=${columns[2]}
+		stack=${columns[1]}
 		stackName="${VCW_STACK_MODULEPREFIX}__$stack"
-		export VCW_STACK_GLOBAL_STACKPREFIX="${VCW_STACK_MODULEPREFIX}__$package"
+		export VCW_STACK_GLOBAL_STACKPREFIX="${VCW_STACK_MODULEPREFIX}__$stack"
 		export VCW_STACK_GLOBAL_STACKPREFIX_CAPPED="${VCW_STACK_GLOBAL_STACKPREFIX}"
 		if (( ${#stackName} > 45 )) ; then
 			let "finish = ${#VCW_STACK_MODULEPREFIX} + 45 - ${#stackName}";
 			stackName="${VCW_STACK_MODULEPREFIX:0:finish}__X_${stack}";
-			export VCW_STACK_GLOBAL_STACKPREFIX_CAPPED="${VCW_STACK_MODULEPREFIX:0:finish}__X_$package";
+			export VCW_STACK_GLOBAL_STACKPREFIX_CAPPED="${VCW_STACK_MODULEPREFIX:0:finish}__X_$stack";
 		fi;
 		if [[ " boot start " == *" $action"* ]] ; then
-			export VCW_STACK_GLOBAL_URLPREFIX="${VCW_STACK_MODULE_URLPREFIX}/${package}"
+			export VCW_STACK_GLOBAL_URLPREFIX="${VCW_STACK_MODULE_URLPREFIX}/${stack}"
 			tmpfile=$(mktemp /tmp/docker-compose.yml.XXXXXX)
-			stackFolder=${componentPath}/_module/packages/$package
+			stackFolder=${componentPath}/_module/packages/$stack
 			composeFile=${stackFolder}/_${stack}.docker-compose.yml
 			. $stackFolder/settings.package
 			. $stackFolder/settings

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 selectedNode="$1"
 component=$2
-if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+componentPath="${component}/_solution";
 
-. set-config $selectedNode
+. set-config $selectedNode;
 
 DOLLAR='$'
 echo $'#!/usr/bin/env bash\n' > ${componentPath}/_configuration/deploy-local-down
@@ -37,11 +37,11 @@ do
 	volumeDir=$(echo $volumeSettings | cut -d':' -f 2)
 	if [[ -d "${componentPath}/_configuration/volumes/${volumeName}" ]] ; then
 		echo "
-executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/${selectedNode}/_solution/_configuration/volumes/${volumeName}/* ${volumeDir}
+executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/${selectedNode}/$component/_solution/_configuration/volumes/${volumeName}/* ${volumeDir}
 " >> ${componentPath}/_configuration/deploy-local-up
 	else
 		echo "
-executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console untar /source/${selectedNode}/_solution/_configuration/volumes/${volumeName}.tar
+executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console untar /source/${selectedNode}/$component/_solution/_configuration/volumes/${volumeName}.tar
 " >> ${componentPath}/_configuration/deploy-local-up
 	fi
 done;

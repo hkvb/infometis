@@ -2,7 +2,7 @@
 shopt -s nullglob
 selectedNode="$1"
 component=$2
-if [[ "$component" == "." ]] ; then componentPath="_solution"; else componentPath="_solution/${component}"; fi
+componentPath="${component}/_solution";
 
 . ${componentPath}/_configuration/configuration
 

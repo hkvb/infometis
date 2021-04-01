@@ -7,7 +7,7 @@ while [[ "$1" == "--arg:"* ]] ; do
   shift;
 done;
 
-for folder in ./*
+for folder in ./$component/*
 do
   if [[ -d $folder ]] ;  then
     folderName="$(basename $folder)"

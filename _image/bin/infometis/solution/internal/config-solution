@@ -22,7 +22,7 @@ if [[ "$component" == "." ]] ; then
 
 else
 
-  componentPath="_solution/${component}";
+  componentPath="${component}/_solution";
   prefix="$component/"
 
 fi
@@ -30,10 +30,10 @@ fi
 cat ${componentPath}/_configuration/deploy-local-down >> _solution/_infometis/remove-volumes
 cat ${componentPath}/_configuration/deploy-local-up >> _solution/_infometis/deploy-volumes
 
-for folder in ${componentPath}/*
+for folder in ${component}/*
 do
   if [[ -d $folder ]] ;  then
     folderName="$(basename $folder)"
-    if [[ "$folderName" != "_"* ]] ; then config-solution ${prefix}${folderName};fi
+    if [[ "$folderName" != "_"* ]] ; then config-solution ${component}/${folderName};fi
   fi
 done

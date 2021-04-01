@@ -9,7 +9,7 @@ for f in _module/packages/* ; do if [[ "${VCW_MODULE_PACKAGES}" != *"$(basename 
 configurationHeader=$'#!/usr/bin/env bash\n\n'
 configurationBlock=$(sed -n "/# START MODULE CONFIGURATION/,/# END MODULE CONFIGURATION/p" _module/configuration)
 echo "$configurationHeader $configurationBlock" > _module/configuration.module
-echo "" > _module/configuration.module
+echo "" >> _module/configuration.module
 if [[ ! -f _module/module-stacks.module ]]; then resetConfiguration="true"; fi;
 
 if [[ ! -d _module/import ]] ; then mkdir _module/import; chmod -R 777 _module/import; fi
@@ -35,7 +35,7 @@ do
 		# configuration & settings files
 		cp _module/import/${package}/configuration _module/packages/${package}/configuration
 		configurationBlock=$(sed -n "/# START CONFIGURATION/,/# END CONFIGURATION/p" _module/packages/${package}/configuration)
-		configurationBlock="${configurationBlock//export CONFIGURATION_/export ${package^^}_}"
+		configurationBlock="${configurationBlock//CONFIGURATION_MODULE/${package^^}_MODULE}"
 		echo "$configurationBlock" >> _module/configuration.module
 		sed -i -e "s/CONFIGURATION_MODULE_/${package^^}_MODULE_/g" _module/import/${package}/settings.stack
 		sed -i -e "s/VCW_STACK_${oldPackage^^}_/${package^^}_/g" _module/import/${package}/settings.stack
@@ -48,6 +48,7 @@ do
 		for stackName in ${stackNames[@]};
 		do
 			newStackName=$(echo "$stackName" | sed "s/${oldPackage}/${package}/g")
+			sed -i -e "s/CONFIGURATION_MODULE_/${package^^}_MODULE_/g" _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml
 			sed -i -e "s/VCW_STACK_${stackName^^}_/${newStackName^^}_/g" _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml
 			sed -i -e "s/vcw_stack_${stackName}_/${newStackName}_/g" _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml
 			cp _module/import/${package}/stacks/vcw_stack_${stackName}.docker-compose.yml _module/packages/${package}/_${newStackName}.docker-compose.yml
