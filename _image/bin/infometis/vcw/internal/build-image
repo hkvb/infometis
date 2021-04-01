@@ -6,7 +6,15 @@ imageTag=$3
 if [[ -f Dockerfile.external ]] ; then extension=".external"; fi
 if [[ -f Dockerfile${extension} ]] ; then
 
-  executionplane "--errors-only" docker build -t $imageName -f Dockerfile${extension} .
+  export VCW_TAG="$imageTag"
+  export VCW_TAG_BASH="5.0.18"
+
+  tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
+  cat  Dockerfile${extension} | envsubst > tmpfile
+#  executionplane "--errors-only" docker build -t $imageName -f tmpfile .
+  executionplane docker build -t $imageName -f tmpfile .
+  rm tmpfile
+
   executionplane docker tag ${imageName} ${imageName}:${imageTag}
   if [[ "${VCW_REGISTRY}" != "" ]] ; then
     executionplane docker tag ${imageName} ${VCW_REGISTRY}$imageName

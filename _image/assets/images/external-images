@@ -1,12 +1,13 @@
 bash:5.0.18
 confluentinc/cp-enterprise-control-center:6.1.1
-confluentinc/cp-server-connect:6.1.1
+confluentinc/cp-kafka:6.1.1
 confluentinc/cp-kafka-rest:6.1.1
-confluentinc/cp-schema-registry:6.1.1
-confluentinc/cp-server:6.1.1
-confluentinc/cp-zookeeper:6.1.1
 confluentinc/cp-ksqldb-cli:6.1.1
 confluentinc/cp-ksqldb-server:6.1.1
+confluentinc/cp-schema-registry:6.1.1
+confluentinc/cp-server:6.1.1
+confluentinc/cp-server-connect:6.1.1
+confluentinc/cp-zookeeper:6.1.1
 docker.elastic.co/apm/apm-server:7.11.2
 docker.elastic.co/beats/filebeat:7.11.2
 docker.elastic.co/beats/heartbeat:7.11.2

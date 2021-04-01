@@ -60,7 +60,7 @@
           done
         ;;
         *)
-          executionplane docker image push ${VCW_REGISTRY}${image}
+          executionplane docker image push ${VCW_REGISTRY}${2}
         ;;
       esac
     ;;

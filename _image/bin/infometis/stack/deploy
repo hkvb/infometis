@@ -16,6 +16,8 @@ if [[ " up down " != *"$command"* ]]; then command="up"; fi
 if [[ ! -f _stack/settings.stack ]] ; then executionplane-error "Stack settings file does not exist!"; cd /vcw/pwd; executionplane-complete; exit; fi
 
 . _stack/settings.stack;
+DOLLAR='$'
+export VCW_STACK_HOSTNAME="${DOLLAR}{VCW_HOSTNAME}"
 export VCW_STACK_GLOBAL_STACKPREFIX="vcw_stack_${VCW_STACK_GLOBAL_STACKNAMES}"
 export VCW_STACK_GLOBAL_URLPREFIX="vcw_stack/${VCW_STACK_GLOBAL_STACKNAMES}"
 export VCW_STACK_GLOBAL_NETWORKLOCAL="vcw_stack"

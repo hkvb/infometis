@@ -24,9 +24,10 @@ $(find . -name Dockerfile)"
 			(
 				subNode=$(dirname $entry)
 				subNode="${subNode:1}"
-				entrySelectedNode="${selectedNode}${subnode}"
+				entrySelectedNode="${selectedNode}${subNode}"
 				entryImageName="${imageName}$(echo $subNode | tr '/' '.')"
 				cd /vcw/pwd/${entrySelectedNode}
+				executionplane-info "build-image $entrySelectedNode $entryImageName $imageTag"
 				build-image $entrySelectedNode $entryImageName $imageTag
 				cd /vcw/pwd/${selectedNode}
 			)

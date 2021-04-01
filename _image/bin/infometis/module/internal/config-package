@@ -8,8 +8,9 @@ for f in _module/packages/* ; do if [[ "${VCW_MODULE_PACKAGES}" != *"$(basename 
 
 configurationHeader=$'#!/usr/bin/env bash\n\n'
 configurationBlock=$(sed -n "/# START MODULE CONFIGURATION/,/# END MODULE CONFIGURATION/p" _module/configuration)
-echo "$configurationHeader $configurationBlock" > _module/configuration
+echo "$configurationHeader $configurationBlock" > _module/configuration.module
 echo "" > _module/configuration.module
+if [[ ! -f _module/module-stacks.module ]]; then resetConfiguration="true"; fi;
 
 if [[ ! -d _module/import ]] ; then mkdir _module/import; chmod -R 777 _module/import; fi
 IFS=',' read -r -a modulePackages <<< "${VCW_MODULE_PACKAGES}"
@@ -79,9 +80,6 @@ do
 	  done
 	)
 done;
-echo "" >> _module/configuration
-cat _module/configuration.module | grep export >> _module/configuration
-echo "" >> _module/configuration
-rm _module/configuration.module
+if [[ "$resetConfiguration" == "true" ]]; then cat _module/configuration.module > _module/configuration; fi;
 chmod -R 777 _module/*
 rm -rf _module/import
