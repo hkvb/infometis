@@ -14,7 +14,7 @@ docker.elastic.co/beats/heartbeat:7.11.2
 docker.elastic.co/beats/journalbeat:7.11.2
 docker.elastic.co/beats/metricbeat:7.11.2
 elasticsearch:7.11.2
-grafana/grafana:7.5.2
+grafana/grafana:7.2.1
 kibana:7.11.2
 mcr.microsoft.com/dotnet/runtime:3.1
 registry:2
