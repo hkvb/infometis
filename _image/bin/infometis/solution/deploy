@@ -29,12 +29,12 @@
 			down|downup|up)
 				if [[ "$method" == *"down"* ]] ; then
 #					deploy local-down $component $selectedNode
-					if [[ "$deployScope" == "infometis" ]] ; then infometis-service deploy solution local-down; else infometis-service deploy solution local-down $component; fi
+					if [[ "$deployScope" == "infometis" ]] ; then infometis-service console set $selectedNode --extract @ deploy solution local-down; else infometis-service console set $selectedNode --extract @ deploy solution local-down $component; fi
 					if [[ "$component" == "." ]] ; then deploy networks-down $selectedNode; fi
 				fi
 				if [[ "$method" == *"up"* ]] ; then
 					if [[ "$component" == "." ]] ; then deploy networks-up $selectedNode; fi
-					if [[ "$deployScope" == "infometis" ]] ; then infometis-service deploy solution local-up; else infometis-service deploy solution local-up $component; fi
+					if [[ "$deployScope" == "infometis" ]] ; then infometis-service console set $selectedNode --extract @ deploy solution local-up; else infometis-service console set $selectedNode --extract @ deploy solution local-up $component; fi
 #					deploy local-up $component $selectedNode
 				fi
 			;;

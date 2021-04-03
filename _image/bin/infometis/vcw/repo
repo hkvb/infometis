@@ -36,7 +36,7 @@
 		;;
 		extract)
 			if [[ "$2" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
-				infometis-service repo extract --local
+				infometis-service console set $selectedNode --extract @ repo extract --local
 			else
 				. executionplane-capture-output docker create ${imageName}
 				executionplane rm -rf $selectedNode
@@ -45,7 +45,7 @@
 		;;
 		load)
 			if [[ "$2" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
-				infometis-service repo load --local
+				infometis-service console set $selectedNode --extract @ repo load --local
 			else
 			  if [[ "$2" == "--hub" ]] ; then executionplane docker image pull ${imageName}:${imageTag};
 				else executionplane docker image pull ${VCW_REGISTRY}${imageName}:${imageTag}; fi;
@@ -65,7 +65,7 @@
 		;;
 		remove)
 			if [[ "$2" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
-				infometis-service remove load --local
+				infometis-service console set $selectedNode --extract @ repo remove --local
 			else
 				cd /vcw/pwd
 				executionplane rm -rf $selectedNode
