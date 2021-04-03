@@ -53,14 +53,15 @@
           console release hub;
         ;;
         external|hub|hub-external)
+          if [[ "$3" != "--hub" && "$2" != "external" ]] ; then registryPrefix="${VCW_REGISTRY}"; fi
           IFS=$'\n' read -d '' -r -a images < /vcw/assets/images/${2}-images
           for image in ${images[@]};
           do
-            executionplane docker image push ${VCW_REGISTRY}${image}
+            executionplane docker image push ${registryPrefix}${image}
           done
         ;;
         *)
-          executionplane docker image push ${VCW_REGISTRY}${2}
+          executionplane docker image push ${registryPrefix}${2}
         ;;
       esac
     ;;
