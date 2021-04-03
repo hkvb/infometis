@@ -10,7 +10,7 @@ ENV VCW_PREENTRYPOINT=/vcw/bin/infometis/internal/entrypoint \
     VCW_REALM=hkvb \
     VCW_IMAGE=infometis \
     VCW_FLAVOR=vcw \
-    VCW_TAG=${VCW_TAG} \
+    VCW_TAG=1.0.0 \
     VCW_IMAGENAME=hkvb/infometis
 
 LABEL co.vcweb.schema-version="1.0" \

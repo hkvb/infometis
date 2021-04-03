@@ -2,6 +2,13 @@ FROM hkvb/bash.wrapper:5.0.18
 
 RUN apk update && apk add docker && apk add git && apk add inotify-tools && apk add nano && apk add curl && rm -rf /var/cache/apk/*
 
+ENV VCW_REALM=hkvb \
+    VCW_IMAGE=infometis \
+    VCW_FLAVOR=base \
+    VCW_TAG=1.0.0 \
+    VCW_IMAGENAME=hkvb/infometis.base
+
+
 LABEL co.vcweb.schema-version="1.0" \
       co.vcweb.label="hkvb/infometis.base - External Build" \
       co.vcweb.description="Base Infometis infometisimage." \
