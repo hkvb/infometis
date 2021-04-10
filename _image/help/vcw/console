@@ -1,7 +1,7 @@
 #
-# release API - InfoMetis controplane
+# console API - InfoMetis controplane
 #
-# The release API consists of one method that pushes the repository container image to a Docker registry.
+# The console API contains functionality that doesn't require a current repository node to execute.
 #
 # console cmd [args]                   : execute the (linux) command
 # console infometis-service [cmd]      : execute the command across all nodes of the cluster

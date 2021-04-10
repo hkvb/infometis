@@ -1,7 +1,7 @@
 #
 # run API - InfoMetis controplane
 #
-# The release API consists of one method that executes the deployment phase.
+# The run API consists of one method that executes the deployment phase.
 #
 # run [method] [context] : method can be boot, start, stop and shutdown
 # run [method] stack     : fully deploy and run or shutdown and remove the container stack

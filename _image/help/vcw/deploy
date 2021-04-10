@@ -1,7 +1,7 @@
 #
 # deploy API - InfoMetis controplane
 #
-# The release API consists of one method that executes the deployment phase.
+# The deploy API consists of one method that executes the deployment phase.
 #
 # deploy [context] [up/down]
 # deploy stack [up/down]    : fully deploy and run or shutdown and remove the container stack

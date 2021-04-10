@@ -21,6 +21,7 @@
 # reboot     shortcut for run shutdown followed by run boot
 # redeploy   shortcut for deploy down followed by deploy up
 # remove     shortcut for deploy down
+# reset      shortcut for console reset
 # restart    shortcut for run stop followed by run start
 # set        shortcut for console set
 # start      shortcut for run start

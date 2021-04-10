@@ -1,7 +1,7 @@
 #
 # config API - InfoMetis controplane
 #
-# The release API processes the configuration set in the config files.
+# The config API processes the configuration of the active repository node.
 # It implements a method for each context.
 #
 # config stack    : processes the stack configuration

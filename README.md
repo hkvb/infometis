@@ -4,8 +4,8 @@ The Infometis image library and controlplane.
 
 ## hkvb/infometis
 
-Library image and Infometis controlplane implementation
-Requires a serious documentation update.
+Library image and Infometis controlplane implementation.
+See the [Reference](REFERENCE.md) for full details.
 
 ## hkvb/infometis/base
 
