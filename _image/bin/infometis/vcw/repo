@@ -86,9 +86,6 @@
 			executionplane docker tag $imageName:$imageTag ${VCW_REGISTRY}$imageName
 			executionplane docker tag $imageName:$imageTag ${VCW_REGISTRY}$imageName:$imageTag
 		;;
-		--info)
-			. info-summary repo
-		;;
 		*)
 			executionplane-error "Method not recognised: $1."
 		;;

@@ -1,18 +1,9 @@
 #
-#
-# build API - infometis.base
-# Use the --info flag to get build specific container image information.
+# build API - InfoMetis controplane
 #
 # The build API consists of one method that builds the repository container image.
-#
-# build <repository selector>
-# The build method without arguments builds the repository container image
-# and tags the image with latest and the VCW_TAG.
-#
-# build --deep <repository selector>
-# This _--deep_ flag force a recursive build of the base images recursively before building the container image.
-#
-# build --exclude-external <repository selector>
-# This _--exclude-external_ flag force a recursive build of the base images recursively before building the container image.
-#
+#   no flags   : builds the image defined at the current repository node
+#   --all      : build the images defined on the current repository node and all child nodes
+#   --external : build all images that require external access to build
+#   --internal : build all images which require no external access to build
 #

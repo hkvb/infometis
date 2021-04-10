@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 shopt -s nullglob
 
-if [[ "${@: -1}" == "--help" ]] ; then _invoke $@;
+if [[ "${@: -1}" == "--help" || "$1" == "-h" ]] ; then _invoke $@;
 
 elif [[ "$1" == "console" ]] ; then	_invoke $@;
 

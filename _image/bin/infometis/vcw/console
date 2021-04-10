@@ -3,19 +3,6 @@
   export PATH="$VCW_EXECUTIONPLANE_APIINTERNALPATH_VCW"
   . executionplane-invoke "$0 $@"
   case $1 in
-    clone-repo)
-      repoName="$2"
-      realm=$(echo ${repoName} | cut -d"/" -f1)
-      if [[ ! -d /hkvb/pwd/${repoName} ]] ; then
-        if [[ ! -d /hkvb/pwd/${realm} ]] ; then mkdir /hkvb/pwd/${realm}; chmod -R 777 /hkvb/pwd/${realm}; fi
-        cd /hkvb/pwd/${realm}
-        executionplane git clone https://github.com/${repoName}.git
-        cd /hkvb/pwd/
-        executionplane chmod -R 777 /hkvb/pwd/${repoName}
-      else
-        executionplane-warning "Repository folder already exists!"
-      fi
-    ;;
     cmd)
       shift
       executionplane $@
@@ -96,28 +83,6 @@
   		executionplane git config --global user.email "${3}"
       executionplane git config --global core.filemode false
   	;;
-    start-registry)
-      port="${2}"
-      if [[ "$port" == "" ]] ; then
-        port="5000"
-      fi
-      executionplane docker run -d -p ${port}:5000 --restart=always --name hkvb_registry_base_2 -v hkvb_registry_base_2_data:/var/lib/registry ${VCW_REGISTRY}registry:2
-  	;;
-    stop-registry)
-      executionplane docker container rm --force hkvb_registry_base_2
-      executionplane docker volume rm --force hkvb_registry_base_2_data
-    ;;
-    tar)
-      tar cvf $2 $3  > /dev/null
-    ;;
-    unload)
-      repoName="$2"
-      executionplane docker image rm --force ${VCW_REGISTRY}${repoName}
-      if [[ "${VCW_REGISTRY}" != "" ]] ; then executionplane docker image rm --force ${VCW_REGISTRY}${repoName}; fi
-    ;;
-    untar)
-      tar -C / -xvf $2  > /dev/null
-    ;;
     with)
       executionplane-info "console $@"
     ;;

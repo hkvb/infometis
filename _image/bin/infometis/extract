@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 (
   export PATH="/vcw/bin/infometis/internal:$VCW_EXECUTIONPLANE_ORIGINALPATH"
-  . cli-executor repo "$(basename $0)" $@
+  if [[ "$1" = "--help" || "$1" == "-h" ]] ; then . cli-executor repo --help $@;
+  else . cli-executor repo "$(basename $0)" $@; fi
 )

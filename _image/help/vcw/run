@@ -1,8 +1,25 @@
 #
+# run API - InfoMetis controplane
 #
-# run API - infometis.base
-# Use the --info flag to get run specific container image information.
+# The release API consists of one method that executes the deployment phase.
 #
-# infometis.base does not implement any methods for deploy API.
+# run [method] [context] : method can be boot, start, stop and shutdown
+# run [method] stack     : fully deploy and run or shutdown and remove the container stack
+# run [method] module    : fully deploy and run or shutdown and remove the container module
+# run [method] solution  : fully deploy and run or shutdown and remove the container solution
+# See full reference for more details
 #
+# short notations:
+# boot               : run boot solution
+# boot [context]     : run boot [context]
+# reboot             : run shutdown solution; run boot solution
+# reboot [context]   : run shutdown [context]; run boot [context]
+# start              : run start solution
+# start [context]    : run start [context]
+# stop               : run stop solution
+# stop [context]     : run stop [context]
+# restart            : run stop solution; run start solution
+# restart [context]  : run stop [context]; run start [context]
+# shutdown           : run shutdown solution
+# shutdown [context] : run shutdown [context]
 #

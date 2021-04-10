@@ -1,8 +1,11 @@
 #
+# release API - InfoMetis controplane
 #
-# release API - infometis.base
-# Use the --info flag to get release specific container image information.
+# The release API consists of one method that pushes the repository container image to a Docker registry.
 #
-# infometis.base does not implement any methods for deploy API.
-#
+#   no flags          : release the image defined by the current repository node to the default Docker registry
+#   --all             : release the images defined on the current repository node and all child nodes
+#   --external        : release all images that require external access to build
+#   --internal        : release all images which require no external access to build
+#   --hub (last flag) : release image to Docker Hub.
 #

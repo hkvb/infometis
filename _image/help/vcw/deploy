@@ -1,8 +1,21 @@
 #
+# deploy API - InfoMetis controplane
 #
-# deploy API - infometis.base
-# Use the --info flag to get deploy specific container image information.
+# The release API consists of one method that executes the deployment phase.
 #
-# infometis.base does not implement any methods for deploy API.
+# deploy [context] [up/down]
+# deploy stack [up/down]    : fully deploy and run or shutdown and remove the container stack
+# deploy module [up/down]   : fully deploy and run or shutdown and remove the container module
+# deploy solution [up/down] : fully deploy and run or shutdown and remove the container solution
+# See full reference for more details
 #
+# short notations:
+# deploy          : deploy solution up
+# deploy stack    : deploy stack up
+# deploy module   : deploy module up
+# deploy solution : deploy solution up
+# remove          : deploy solution down
+# remove stack    : deploy stack down
+# remove module   : deploy module down
+# remove solution : deploy solution down
 #

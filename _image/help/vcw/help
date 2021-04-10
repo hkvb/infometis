@@ -1,14 +1,29 @@
 #
+# InfoMetis controlplane - Help
 #
-# infometis.base
+# The InfoMetis controlplane exposes functionality in 7 APIs, each with its own help.
+# All APIs require a valid repository node to be set, except for console.
 #
-# A infometis gives access to an API that consists of 7 sections: console, repo, config, build, release, deploy and run.
-# Not all infometiss require the full API for their operations.
+# console    functionality that executes without the context of a repository.
+# repo       functionality to manage the repository.
+# config     functionality to apply the configuration
 #
-# The base implementation is not used as a standalone infometis.
-# It implements base functionality that is used by the derived controplanes.
-# It provides full implementation for repo, build and release and partial implementation of config and console.
-# There is no implementation for deploy and run.
+# build      builds an image from the current repository node.
+# release    release an image to a Docker registry.
 #
-# Each to level API method implements the --info flag returning information relevant to the API method about the image.
+# deploy     implementation depends on context
+# run        implements boot, start, stop and shutdown
+#
+# shortcuts:
+# extract    shortcut for repo extract
+# load       shortcut for repo load
+# boot       shortcut for run boot
+# reboot     shortcut for run shutdown followed by run boot
+# redeploy   shortcut for deploy down followed by deploy up
+# remove     shortcut for deploy down
+# restart    shortcut for run stop followed by run start
+# set        shortcut for console set
+# start      shortcut for run start
+# stop       shortcut for run stop
+# shutdown   shortcut for run shutdown
 #
