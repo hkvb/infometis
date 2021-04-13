@@ -25,10 +25,22 @@
 			executionplane git push -f --tags
 		;;
 		config)
-			executionplane git remote set-url origin "https://github.com/${imageName}.git"
+			if [[ ! -d ./.git ]] ; then
+				executionplane git init
+				executionplane git remote add origin "https://github.com/${imageName}.git"
+				executionplane git add .
+				executionplane git commit -m "initial checkin"
+			else
+				executionplane git init
+				executionplane git remote set-url origin "https://github.com/${imageName}.git"
+			fi
 			executionplane git branch --set-upstream-to=origin/master master
 			executionplane git config core.filemode false
 			executionplane git config credential.helper store
+			if [[ "$2" != "$selectedNode" ]] ; then
+				executionplane git tag -d "$imageTag"
+				executionplane git tag -f "$2"
+			fi
 		;;
 		create)
 			case "$2" in
@@ -87,7 +99,7 @@
 		;;
 		reset)
 			executionplane rm -rf .git
-			repo create $selectedNode
+			repo config $selectedNode
 			repo commit -m "initial checkin after reset, for earlier history extract repository from container image of previous (major) version." $selectedNode
 			repo config $selectedNode
 			repo push $selectedNode
