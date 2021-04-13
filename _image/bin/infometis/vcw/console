@@ -65,7 +65,13 @@
     set)
       echo "$2" > "${VCW_CURRENT_CONSOLE_SELECTION}"
       repoNode=$(echo $2 | cut -d"/" -f1)/$(echo ${2} | cut -d"/" -f2)
-      if [[ ! -d ./${repoNode} && "${3}" == "--extract" ]] ; then
+      if [[ ! -f ./${repoNode}/Dockerfile && "${3}" == "--create" ]] ; then
+        executionplane-info "Creating new repository"
+        . executionplane-capture-output docker create "${VCW_REGISTRY}hkvb/poc"
+        executionplane rm -rf /vcw/pwd/${repoNode}
+        executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/blank/repo /vcw/pwd/${repoNode}
+        chmod 755 /vcw/pwd/${repoNode}
+      elif [[ ! -f ./${repoNode}/Dockerfile && "${3}" == "--extract" ]] ; then
         if [[ "$4" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
   				infometis-service console set "$2" --extract --local
   			else
@@ -76,6 +82,9 @@
       		executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/. /vcw/pwd/${repoNode}/
           executionplane chmod -R 777 /vcw/pwd/${repoNode}
         fi
+      elif [[ ! -d ./$2 ]] ; then
+        mkdir ./${2}
+        chmod 755 ./$2
       fi
     ;;
     set-repo-user)

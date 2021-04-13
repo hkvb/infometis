@@ -6,7 +6,7 @@
 # repo commit [message] : adds the unstaged files and commits all to the current (master) branch, updating tag to commit
 # repo compact          : compacts the commit log with garbage collection and pushes it out to the remote
 # repo config           : sets the remote origin of the repository (gitHub only)
-# repo create           : create a new GIT repository at the current node
+# repo create           : create a new repository element: image, stack, module or solution
 # repo extract          : extracts the repository from the currently cached repository image replacing the existing repository
 # repo load             : pull the image from the current repository node into the image cache
 # repo log              : display a compact summary of the last 10 commits of the repository

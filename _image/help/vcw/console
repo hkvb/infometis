@@ -3,18 +3,20 @@
 #
 # The console API contains functionality that doesn't require a current repository node to execute.
 #
-# console cmd [args]                   : execute the (linux) command
-# console infometis-service [cmd]      : execute the command across all nodes of the cluster
-# console load [image]                 : pull the image and tag with registry prefix
-#              --external              : pull external non-framework images and tag with registry prefix
-#              --hub                   : pull framework images from Docker hub and tag with registry prefix
-#              --hub-external          : pull framework images that require external access to build and tag with registry prefix
-# console release [image]              : push the image to the current registry
-#                 --external           : push the external non-framework images to the current registry
-#                 --hub                : push the framework images to the current registry
-#                 --hub-external       : push the framework images that require external access to build to the current registry
-# console reload-infometis             : reload the infometis controlplane image into the cache on all cluster nodes
-# console reset                        : clear the current active repository node
-# console set [repository node]        : set as active repository node
-# console set-repo-user [name] [email] : set current user in GIT
+# console cmd [args]                      : execute the (linux) command
+# console infometis-service [cmd]         : execute the command across all nodes of the cluster
+# console load [image]                    : pull the image and tag with registry prefix
+#              --external                 : pull external non-framework images and tag with registry prefix
+#              --hub                      : pull framework images from Docker hub and tag with registry prefix
+#              --hub-external             : pull framework images that require external access to build and tag with registry prefix
+# console release [image]                 : push the image to the current registry
+#                 --external              : push the external non-framework images to the current registry
+#                 --hub                   : push the framework images to the current registry
+#                 --hub-external          : push the framework images that require external access to build to the current registry
+# console reload-infometis                : reload the infometis controlplane image into the cache on all cluster nodes
+# console reset                           : clear the current active repository node
+# console set [repository node]           : set as active repository node
+# console set [repository node] --extract : set as active repository node, extract repository if not present
+# console set [repository node] --create  : set as active repository node, create repository if none exist
+# console set-repo-user [name] [email]    : set current user in GIT
 #

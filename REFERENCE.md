@@ -118,8 +118,8 @@ compacts the commit log, applies garbage collection and pushes it out to the rem
 __repo config__  
 sets the remote origin of the GIT repository (GitHub only)  
 
-__repo create__  
-create a new repository on the current repository node  
+__repo create__  [image/external-image/stack/global-stack/module/solution/component]
+create a new repository unit at the active repository node
 
 __repo extract__  
 extract the repository from the image associated with the active repository node  

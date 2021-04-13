@@ -31,8 +31,21 @@
 			executionplane git config credential.helper store
 		;;
 		create)
-			executionplane git init
-			executionplane git remote add origin test
+			case "$2" in
+				component) unit="solution_component"; ;;
+				external-image) unit="image_external"; ;;
+				global-stack) unit="stack_global"; ;;
+				image) unit="image"; ;;
+				module) unit="module"; ;;
+				solution) unit="solution"; ;;
+				stack) unit="stack"; ;;
+			esac
+			if [[ "$unit" != "" ]] ; then
+				executionplane-info "Creating new $2"
+				. executionplane-capture-output docker create "${VCW_REGISTRY}hkvb/poc"
+				executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/blank/$unit/. /vcw/pwd/${selectedNode}
+				chmod 755 /vcw/pwd/${selectedNode}
+			fi
 		;;
 		extract)
 			if [[ "$2" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
@@ -69,6 +82,7 @@
 			else
 				cd /vcw/pwd
 				executionplane rm -rf $selectedNode
+				echo "" > "${VCW_CURRENT_CONSOLE_SELECTION}"
 			fi
 		;;
 		reset)
