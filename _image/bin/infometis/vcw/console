@@ -40,7 +40,7 @@
           console release hub;
         ;;
         external|hub|hub-external)
-          if [[ "$3" != "--hub" && "$2" != "external" ]] ; then registryPrefix="${VCW_REGISTRY}"; fi
+          if [[ "$3" != "--hub" ]] ; then registryPrefix="${VCW_REGISTRY}"; fi
           IFS=$'\n' read -d '' -r -a images < /vcw/assets/images/${2}-images
           for image in ${images[@]};
           do
