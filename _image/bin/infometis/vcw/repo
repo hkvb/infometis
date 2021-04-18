@@ -64,7 +64,7 @@
 				infometis-service console set $selectedNode --extract @ repo extract --local
 			else
 				. executionplane-capture-output docker create ${imageName}
-				executionplane rm -rf $selectedNode
+				executionplane rm -rf $selectedNode/*
 				executionplane docker container cp $VCW_EXECUTIONPLANE_OUTPUT:/vcw/repo/. .
 			fi
 		;;

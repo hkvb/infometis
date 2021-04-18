@@ -115,7 +115,7 @@ adds the unstaged files and commits all to the current (master) branch, updating
 __repo compact__  
 compacts the commit log, applies garbage collection and pushes it out to the remote  
 
-__repo config__  
+__repo config__  [tag]
 sets the remote origin of the GIT repository (GitHub only)  
 
 __repo create__  [image/external-image/stack/global-stack/module/solution/component]
