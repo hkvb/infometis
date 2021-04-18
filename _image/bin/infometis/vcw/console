@@ -48,6 +48,7 @@
           done
         ;;
         *)
+          if [[ "$3" != "--hub" ]] ; then registryPrefix="${VCW_REGISTRY}"; fi
           executionplane docker image push ${registryPrefix}${2}
         ;;
       esac
