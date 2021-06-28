@@ -18,6 +18,7 @@ grafana/grafana:7.2.1
 kibana:7.11.2
 mcr.microsoft.com/dotnet/runtime:3.1
 mcr.microsoft.com/dotnet/aspnet:3.1
+moby/buildkit:buildx-stable-1
 registry:2
 streamsets/datacollector-libs:streamsets-datacollector-elasticsearch_5-lib-3.16.0
 streamsets/datacollector-libs:streamsets-datacollector-apache-kafka_2_0-lib-3.16.0

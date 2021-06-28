@@ -32,6 +32,20 @@
         ;;
       esac
     ;;
+    multiarch)
+      if [[ "$2" == "on" ]] ; then
+        if [[ "$(docker buildx ls | grep infometis)" != "" ]] ; then executionplane docker buildx rm infometis ; fi
+        executionplane docker buildx create --name infometis
+        executionplane docker buildx use infometis
+        executionplane docker buildx inspect --bootstrap
+#        BUILDER=$(sudo docker ps | grep buildkitd | cut -f1 -d' ')
+#        sudo docker cp YOUR-CA.crt $BUILDER:/usr/local/share/ca-certificates/
+#        sudo docker exec $BUILDER update-ca-certificates
+#        sudo docker restart $BUILDER
+      else
+        executionplane docker buildx rm infometis
+      fi
+    ;;
     release)
       case $2 in
         all)
