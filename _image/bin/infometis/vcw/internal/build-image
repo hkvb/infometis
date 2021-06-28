@@ -12,6 +12,7 @@ if [[ -f Dockerfile${extension} ]] ; then
   tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
   cat  Dockerfile${extension} | envsubst > tmpfile
 #  executionplane "--errors-only" docker build -t $imageName -f tmpfile .
+#  executionplane docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t registry.vcweb.iot/buildx/hello2 .
   executionplane docker build -t $imageName -f tmpfile .
   rm tmpfile
 

@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-(
-  export PATH="/vcw/bin/infometis/internal:$VCW_EXECUTIONPLANE_ORIGINALPATH"
-  if [[ "$1" = "--help" || "$1" == "-h" ]] ; then . cli-executor console --help $@;
-  else . cli-executor console "$(basename $0)" $@; fi
-)
