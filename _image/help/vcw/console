@@ -9,6 +9,7 @@
 #              --external                 : pull external non-framework images and tag with registry prefix
 #              --hub                      : pull framework images from Docker hub and tag with registry prefix
 #              --hub-external             : pull framework images that require external access to build and tag with registry prefix
+# console multiarch on/off                : switches multiarch buildx on or off, use release to execute and push the build
 # console release [image]                 : push the image to the current registry
 #                 --external              : push the external non-framework images to the current registry
 #                 --hub                   : push the framework images to the current registry

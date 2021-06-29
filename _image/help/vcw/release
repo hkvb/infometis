@@ -2,6 +2,8 @@
 # release API - InfoMetis controplane
 #
 # The release API consists of one method that pushes the repository container image to a Docker registry.
+# Normally it executes a simple push to the current registry.
+# It reponds to the multiarch switch by building for all configured architectures and pushing to the registry.
 #
 #   no flags          : release the image defined by the current repository node to the default Docker registry
 #   --all             : release the images defined on the current repository node and all child nodes

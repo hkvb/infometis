@@ -6,14 +6,14 @@ destination=$4
 
 if [[ "$destination" == "--hub" ]] ; then releaseImage="${imageName}"; else releaseImage="${VCW_REGISTRY}${imageName}"; fi
 
-if [[ "$(docker ps | grep buildkitd)" == "" ]] ; then
+if [[ "$(docker buildx ls | grep infometis)" == "" ]] ; then
   executionplane "--errors-only" docker image push ${releaseImage}
   executionplane "--errors-only" docker image push ${releaseImage}:${imageTag}
 else
   if [[ -f Dockerfile.external ]] ; then extension=".external"; fi
   if [[ -f Dockerfile${extension} ]] ; then
 
-#    multiArchs="linux/amd64,linux/arm64,linux/arm/v7"
+#    multiArchs="linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6"
     multiArchs=$(head -n 1 Dockerfile${extension} | cut -f3 -d' ')
     if [[ "$multiArchs" == "" ]] ; then multiArchs="linux/amd64"; fi
 
