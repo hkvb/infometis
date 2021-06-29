@@ -38,10 +38,12 @@
         executionplane docker buildx create --name infometis
         executionplane docker buildx use infometis
         executionplane docker buildx inspect --bootstrap
-#        BUILDER=$(sudo docker ps | grep buildkitd | cut -f1 -d' ')
-#        sudo docker cp YOUR-CA.crt $BUILDER:/usr/local/share/ca-certificates/
-#        sudo docker exec $BUILDER update-ca-certificates
-#        sudo docker restart $BUILDER
+        if [[ "${VCW_REGISTRY}" != "" ]] ; then
+          BUILDER=$(docker ps | grep buildkitd | cut -f1 -d' ')
+          executionplane docker cp /etc/docker/certs.d/${VCW_REGISTRY}/ca.crt $BUILDER:/usr/local/share/ca-certificates/${VCW_REGISTRY::-1}-ca.crt
+          executionplane docker exec $BUILDER update-ca-certificates
+          executionplane docker restart $BUILDER
+        fi
       else
         executionplane docker buildx rm infometis
       fi

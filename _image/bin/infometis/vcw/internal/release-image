@@ -1,15 +1,31 @@
 #!/usr/bin/env bash
-imageName=$1
-imageTag=$2
-destination=$3
+selectedNode=$1
+imageName=$2
+imageTag=$3
+destination=$4
 
-case $destination in
-  --hub)
-    executionplane "--errors-only" docker image push ${imageName}
-    executionplane "--errors-only" docker image push ${imageName}:${imageTag}
-  ;;
-  *)
-    executionplane "--errors-only" docker image push ${VCW_REGISTRY}${imageName}
-    executionplane "--errors-only" docker image push ${VCW_REGISTRY}${imageName}:${imageTag}
-  ;;
-esac
+if [[ "$destination" == "--hub" ]] ; then releaseImage="${imageName}"; else releaseImage="${VCW_REGISTRY}${imageName}"; fi
+
+if [[ "$(docker ps | grep buildkitd)" == "" ]] ; then
+  executionplane "--errors-only" docker image push ${releaseImage}
+  executionplane "--errors-only" docker image push ${releaseImage}:${imageTag}
+else
+  if [[ -f Dockerfile.external ]] ; then extension=".external"; fi
+  if [[ -f Dockerfile${extension} ]] ; then
+
+#    multiArchs="linux/amd64,linux/arm64,linux/arm/v7"
+    multiArchs=$(head -n 1 Dockerfile${extension} | cut -f3 -d' ')
+    if [[ "$multiArchs" == "" ]] ; then multiArchs="linux/amd64"; fi
+
+    export VCW_TAG="$imageTag"
+    export VCW_TAG_BASH="5.0.18"
+
+    tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
+    cat  Dockerfile${extension} | envsubst > tmpfile
+
+    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage} -f tmpfile .
+    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage}:${imageTag} -f tmpfile .
+    rm tmpfile
+
+  else executionplane-error "${selectedNode}/Dockerfile${extension}: File does not exist."; fi
+fi
