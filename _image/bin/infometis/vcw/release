@@ -26,7 +26,8 @@ $(find . -name Dockerfile)"
 				subNode=$(dirname $entry)
 				subNode="${subNode:1}"
 				entryImageName="${imageName}$(echo $subNode | tr '/' '.')"
-				release-image $selectedNode $entryImageName $imageTag $destination
+				if [[ "$subNode" == "" ]] ; then selectedSubNode="$selectedNode"; else selectedSubNode="$selectedNode/$subNode"; fi
+				release-image $selectedSubNode $entryImageName $imageTag $destination
 			)
 		done
 

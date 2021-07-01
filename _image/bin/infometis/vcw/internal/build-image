@@ -3,17 +3,15 @@ selectedNode=$1
 imageName=$2
 imageTag=$3
 
-if [[ -f Dockerfile.external ]] ; then extension=".external"; fi
-if [[ -f Dockerfile${extension} ]] ; then
+if [[ -f /vcw/pwd/$selectedNode/Dockerfile.external ]] ; then extension=".external"; fi
+if [[ -f /vcw/pwd/$selectedNode/Dockerfile${extension} ]] ; then
 
   export VCW_TAG="$imageTag"
   export VCW_TAG_BASH="5.0.18"
 
   tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
-  cat  Dockerfile${extension} | envsubst > tmpfile
-#  executionplane "--errors-only" docker build -t $imageName -f tmpfile .
-#  executionplane docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t registry.vcweb.iot/buildx/hello2 .
-  executionplane docker build -t $imageName -f tmpfile .
+  cat  /vcw/pwd/$selectedNode/Dockerfile${extension} | envsubst > tmpfile
+  executionplane docker build -t $imageName -f tmpfile /vcw/pwd/$selectedNode/.
   rm tmpfile
 
   executionplane docker tag ${imageName} ${imageName}:${imageTag}
@@ -22,4 +20,4 @@ if [[ -f Dockerfile${extension} ]] ; then
     executionplane docker tag ${imageName} ${VCW_REGISTRY}${imageName}:${imageTag}
   fi
 
-else executionplane-error "${selectedNode}/Dockerfile${extension}: File does not exist."; fi
+else executionplane-error "/vcw/pwd/$selectedNode/Dockerfile${extension}: File does not exist."; fi

@@ -10,19 +10,19 @@ if [[ "$(docker buildx ls | grep infometis)" == "" ]] ; then
   executionplane "--errors-only" docker image push ${releaseImage}
   executionplane "--errors-only" docker image push ${releaseImage}:${imageTag}
 else
-  if [[ -f Dockerfile.external ]] ; then extension=".external"; fi
-  if [[ -f Dockerfile${extension} ]] ; then
+  if [[ -f /vcw/pwd/$selectedNode/Dockerfile.external ]] ; then extension=".external"; fi
+  if [[ -f /vcw/pwd/$selectedNode/Dockerfile${extension} ]] ; then
 
 #    multiArchs="linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6"
-    multiArchs=$(head -n 1 Dockerfile${extension} | cut -f3 -d' ')
+    multiArchs=$(head -n 1 /vcw/pwd/$selectedNode/Dockerfile${extension} | cut -f3 -d' ')
     if [[ "$multiArchs" == "" ]] ; then multiArchs="linux/amd64"; fi
 
     export VCW_TAG="$imageTag"
     export VCW_TAG_BASH="5.0.18"
     tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
-    cat  Dockerfile${extension} | envsubst > $tmpfile
-    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage} -f $tmpfile .
-    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage}:${imageTag} -f $tmpfile .
+    cat  /vcw/pwd/$selectedNode/Dockerfile${extension} | envsubst > $tmpfile
+    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage} -f $tmpfile /vcw/pwd/$selectedNode/.
+    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage}:${imageTag} -f $tmpfile /vcw/pwd/$selectedNode/.
     rm $tmpfile
 
   else executionplane-error "${selectedNode}/Dockerfile${extension}: File does not exist."; fi
