@@ -1,26 +1,26 @@
-bash:5.0.18
-confluentinc/cp-enterprise-control-center:6.1.1
-confluentinc/cp-kafka:6.1.1
-confluentinc/cp-kafka-rest:6.1.1
-confluentinc/cp-ksqldb-cli:6.1.1
-confluentinc/cp-ksqldb-server:6.1.1
-confluentinc/cp-schema-registry:6.1.1
-confluentinc/cp-server:6.1.1
-confluentinc/cp-server-connect:6.1.1
-confluentinc/cp-zookeeper:6.1.1
-docker.elastic.co/apm/apm-server:7.11.2
-docker.elastic.co/beats/filebeat:7.11.2
-docker.elastic.co/beats/heartbeat:7.11.2
-docker.elastic.co/beats/journalbeat:7.11.2
-docker.elastic.co/beats/metricbeat:7.11.2
-elasticsearch:7.11.2
-grafana/grafana:7.2.1
-kibana:7.11.2
-mcr.microsoft.com/dotnet/runtime:3.1
-mcr.microsoft.com/dotnet/aspnet:3.1
-moby/buildkit:buildx-stable-1
-registry:2
-streamsets/datacollector-libs:streamsets-datacollector-elasticsearch_5-lib-3.16.0
-streamsets/datacollector-libs:streamsets-datacollector-apache-kafka_2_0-lib-3.16.0
-streamsets/datacollector:3.16.0
-traefik:v2.3.1
+bash:5.0.18 linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+confluentinc/cp-enterprise-control-center:6.1.1 linux/amd64
+confluentinc/cp-kafka:6.1.1 linux/amd64
+confluentinc/cp-kafka-rest:6.1.1 linux/amd64
+confluentinc/cp-ksqldb-cli:6.1.1 linux/amd64
+confluentinc/cp-ksqldb-server:6.1.1 linux/amd64
+confluentinc/cp-schema-registry:6.1.1 linux/amd64
+confluentinc/cp-server:6.1.1 linux/amd64
+confluentinc/cp-server-connect:6.1.1 linux/amd64
+confluentinc/cp-zookeeper:6.1.1 linux/amd64
+docker.elastic.co/apm/apm-server:7.11.2 linux/amd64
+docker.elastic.co/beats/filebeat:7.11.2 linux/amd64
+docker.elastic.co/beats/heartbeat:7.11.2 linux/amd64
+docker.elastic.co/beats/journalbeat:7.11.2 linux/amd64
+docker.elastic.co/beats/metricbeat:7.11.2 linux/amd64
+elasticsearch:7.11.2 linux/amd64,linux/arm64/v8
+grafana/grafana:7.2.1 linux/amd64,linux/arm64
+kibana:7.11.2 linux/amd64
+mcr.microsoft.com/dotnet/runtime:3.1 linux/amd64
+mcr.microsoft.com/dotnet/aspnet:3.1 linux/amd64
+moby/buildkit:buildx-stable-1 linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+registry:2 linux/amd64,linux/arm64,linux/arm/v6
+streamsets/datacollector-libs:streamsets-datacollector-elasticsearch_5-lib-3.16.0 linux/amd64
+streamsets/datacollector-libs:streamsets-datacollector-apache-kafka_2_0-lib-3.16.0 linux/amd64
+streamsets/datacollector:3.16.0 linux/amd64
+traefik:v2.3.1 linux/amd64,linux/arm64/v8,linux/arm/v6

@@ -26,12 +26,12 @@ $(find . -name Dockerfile)"
 				subNode=$(dirname $entry)
 				subNode="${subNode:1}"
 				entryImageName="${imageName}$(echo $subNode | tr '/' '.')"
-				release-image selectedNode $entryImageName $imageTag $destination
+				release-image $selectedNode $entryImageName $imageTag $destination
 			)
 		done
 
 	else
-		release-image selectedNode $imageName $imageTag $destination
+		release-image $selectedNode $imageName $imageTag $destination
 	fi
 
 	cd /vcw/pwd;

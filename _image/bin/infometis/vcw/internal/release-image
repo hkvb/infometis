@@ -19,13 +19,11 @@ else
 
     export VCW_TAG="$imageTag"
     export VCW_TAG_BASH="5.0.18"
-
     tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
-    cat  Dockerfile${extension} | envsubst > tmpfile
-
-    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage} -f tmpfile .
-    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage}:${imageTag} -f tmpfile .
-    rm tmpfile
+    cat  Dockerfile${extension} | envsubst > $tmpfile
+    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage} -f $tmpfile .
+    executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage}:${imageTag} -f $tmpfile .
+    rm $tmpfile
 
   else executionplane-error "${selectedNode}/Dockerfile${extension}: File does not exist."; fi
 fi

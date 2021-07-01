@@ -14,6 +14,9 @@ else
 	. _invoke $@ $selector;
 
 fi
+
+if [[ -f /vcw/pwd/execute-command-$VCW_EXECUTIONTAG ]] ; then echo "starting execute-command ..."; sleep 5; /vcw/pwd/execute-command-$VCW_EXECUTIONTAG; rm /vcw/pwd/execute-command-$VCW_EXECUTIONTAG; fi
+
 storedSelector=$(< ${VCW_CURRENT_CONSOLE_SELECTION})
 if [[ "$storedSelector" != "" ]] ; then
   printf '\n%s@' "$storedSelector"

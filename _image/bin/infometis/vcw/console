@@ -19,16 +19,28 @@
           console load hub;
         ;;
         external|hub|hub-external)
-          IFS=$'\n' read -d '' -r -a images < /vcw/assets/images/${2}-images
-          for image in ${images[@]};
-          do
+          cat /vcw/assets/images/${2}-images | while read -r line ; do
+        		IFS=' ' read -r -a columns <<< "$line"
+            image="${columns[0]}"
+            multiArchs="${columns[1]}"
+            if [[ "$multiArchs" == "" ]] ; then multiArchs="linux/amd64"; fi
+            executionplane-info "$image and $multiArchs"
             executionplane docker image pull ${image}
             executionplane docker tag ${image} ${VCW_REGISTRY}${image}
+            if [[ "$(docker buildx ls | grep infometis)" == "" ]] ; then
+              executionplane docker image push ${VCW_REGISTRY}${image}
+            else
+              tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
+              echo "FROM ${image}" > $tmpfile
+              executionplane docker buildx build --platform "$multiArchs" --push -t ${VCW_REGISTRY}${image} -f $tmpfile .
+              rm $tmpfile
+            fi
           done
         ;;
         *)
           executionplane docker image pull ${2}
           executionplane docker tag ${2} ${VCW_REGISTRY}${2}
+          executionplane docker image push ${VCW_REGISTRY}${2}
         ;;
       esac
     ;;
@@ -47,27 +59,6 @@
       else
         executionplane docker buildx rm infometis
       fi
-    ;;
-    release)
-      case $2 in
-        all)
-          console release external;
-          console release hub-external;
-          console release hub;
-        ;;
-        external|hub|hub-external)
-          if [[ "$3" != "--hub" ]] ; then registryPrefix="${VCW_REGISTRY}"; fi
-          IFS=$'\n' read -d '' -r -a images < /vcw/assets/images/${2}-images
-          for image in ${images[@]};
-          do
-            executionplane docker image push ${registryPrefix}${image}
-          done
-        ;;
-        *)
-          if [[ "$3" != "--hub" ]] ; then registryPrefix="${VCW_REGISTRY}"; fi
-          executionplane docker image push ${registryPrefix}${2}
-        ;;
-      esac
     ;;
     reload-infometis)
       if [[ "$2" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
