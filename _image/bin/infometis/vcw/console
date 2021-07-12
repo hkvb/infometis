@@ -100,6 +100,12 @@
   		executionplane git config --global user.email "${3}"
       executionplane git config --global core.filemode false
   	;;
+    tar)
+      tar cvf $2 $3  > /dev/null
+    ;;
+    untar)
+      tar -C / -xvf $2  > /dev/null
+    ;;
     with)
       executionplane-info "console $@"
     ;;

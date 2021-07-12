@@ -20,4 +20,6 @@
 # console set [repository node] --extract : set as active repository node, extract repository if not present
 # console set [repository node] --create  : set as active repository node, create repository if none exist
 # console set-repo-user [name] [email]    : set current user in GIT
+# console tar [tar file] [source]         : create tar file from the source
+# console untar [tar file]                : unpack tar file
 #
