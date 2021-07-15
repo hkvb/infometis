@@ -107,7 +107,26 @@
       tar -C / -xvf $2  > /dev/null
     ;;
     with)
+#      currentSelection="$(cat  ${VCW_CURRENT_CONSOLE_SELECTION})"
       executionplane-info "console $@"
+      shift; target="$1"; shift;
+      commandline="$@"
+      selection="$(find ./${target}*/Dockerfile)"
+  		IFS=$'\n' read -d '' -r -a entries <<< "$selection"
+  		for entry in ${entries[@]};
+  		do
+  			(
+          withNode=$(dirname $entry)
+  				withNode="${withNode:2}"
+          $commandline $withNode
+#          IFS=';' read -ra commands <<< "$commandLine"
+#          for i in "${commands[@]}"; do
+#            # process "$i"
+#            executionplane-info "$i: $commands[i] $withNode"
+#          done
+  			)
+  		done
+#      echo "$currentSelection" > "${VCW_CURRENT_CONSOLE_SELECTION}";
     ;;
    *)
       executionplane-error "Method not recognised: $1."

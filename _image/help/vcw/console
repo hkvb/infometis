@@ -22,4 +22,6 @@
 # console set-repo-user [name] [email]    : set current user in GIT
 # console tar [tar file] [source]         : create tar file from the source
 # console untar [tar file]                : unpack tar file
+# console with [target] [commandline]     : execute [commandline] for each repository match in [target]
+#                                           commands require @@ separator, instead of ;
 #
