@@ -11,7 +11,7 @@ if [[ -f /vcw/pwd/$selectedNode/Dockerfile${extension} ]] ; then
 
   tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
   cat  /vcw/pwd/$selectedNode/Dockerfile${extension} | envsubst > $tmpfile
-  executionplane docker build -t $imageName -f tmpfile /vcw/pwd/$selectedNode/.
+  executionplane docker build -t $imageName -f $tmpfile /vcw/pwd/$selectedNode/.
   rm $tmpfile
 
   executionplane docker tag ${imageName} ${imageName}:${imageTag}
