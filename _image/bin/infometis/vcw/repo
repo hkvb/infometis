@@ -108,6 +108,13 @@
 		status)
 			executionplane git status
 		;;
+		tag)
+			newTag="$2"
+			echo "* $newTag  " >> README.md
+			executionplane git add .
+			executionplane git commit -m "$(echo "Create new tag $newTag")"
+			executionplane git tag -f ${newTag}
+		;;
 		tag-registry)
 			executionplane docker tag $imageName:$imageTag ${VCW_REGISTRY}$imageName
 			executionplane docker tag $imageName:$imageTag ${VCW_REGISTRY}$imageName:$imageTag

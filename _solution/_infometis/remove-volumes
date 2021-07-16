@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+
+
+  ######################################################
+  # THIS FILE IS AUTO-GENERATED - PLEASE DO NOT CHANGE #
+  ######################################################
+
+#!/usr/bin/env bash
+
+executionplane --silent docker container prune --force
+continue="true"
+while [[ "true" == "$continue" ]] ;
+do
+	executionplane docker volume rm "hkvb_infometis__vcw_infometis_repos"
+	result=$(docker volume ls | grep "hkvb_infometis__vcw_infometis_repos")
+	if [[ "$result" == "" ]] ; then
+		continue="false"
+	else
+		sleep 3;
+	fi
+done;
+	
