@@ -35,9 +35,9 @@
 		;;
 		volume)
 			stack=""
-			if [[ $# -gt 2 ]] ; then stack=$2; fi
+			if [[ $# -gt 1 ]] ; then stack=$1; fi
 			export VCW_SELECTEDNODE="$selectedNode"
-			config-volume "${selectedNode}" "$stack"
+			config-volume "${selectedNode}" "${component}" "$stack"
 		;;
 		*)
 			executionplane-error "Method not recognised: $1."

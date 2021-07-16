@@ -23,4 +23,5 @@ registry:2 linux/amd64,linux/arm64,linux/arm/v6
 streamsets/datacollector-libs:streamsets-datacollector-elasticsearch_5-lib-3.16.0 linux/amd64
 streamsets/datacollector-libs:streamsets-datacollector-apache-kafka_2_0-lib-3.16.0 linux/amd64
 streamsets/datacollector:3.16.0 linux/amd64
+tonistiigi/binfmt linux/amd64
 traefik:v2.3.1 linux/amd64,linux/arm64/v8,linux/arm/v6

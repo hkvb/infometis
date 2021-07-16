@@ -39,7 +39,7 @@ do
 		echo "
 executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/${selectedNode}/$component/_solution/_configuration/volumes/${volumeName}/* ${volumeDir}
 " >> ${componentPath}/_configuration/deploy-local-up
-	else
+elif [[ -f "${componentPath}/_configuration/volumes/${volumeName}.tar" ]] ; then
 		echo "
 executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console untar /source/${selectedNode}/$component/_solution/_configuration/volumes/${volumeName}.tar
 " >> ${componentPath}/_configuration/deploy-local-up

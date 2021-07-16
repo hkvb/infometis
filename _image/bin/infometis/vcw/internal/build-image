@@ -10,9 +10,9 @@ if [[ -f /vcw/pwd/$selectedNode/Dockerfile${extension} ]] ; then
   export VCW_TAG_BASH="5.0.18"
 
   tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
-  cat  /vcw/pwd/$selectedNode/Dockerfile${extension} | envsubst > tmpfile
+  cat  /vcw/pwd/$selectedNode/Dockerfile${extension} | envsubst > $tmpfile
   executionplane docker build -t $imageName -f tmpfile /vcw/pwd/$selectedNode/.
-  rm tmpfile
+  rm $tmpfile
 
   executionplane docker tag ${imageName} ${imageName}:${imageTag}
   if [[ "${VCW_REGISTRY}" != "" ]] ; then

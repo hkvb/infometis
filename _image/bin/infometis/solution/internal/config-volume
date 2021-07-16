@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+selectedNode="$1"
+selectedComponent="$2"
+volumePrefix="${VCW_STACK_MODULEPREFIX}__$3"
+
+IFS=$'\n' read -d '' -r -a volumes < ${selectedComponent}/_solution/_configuration/module-volumes-initialised
+for volumeSettings in ${volumes[@]};
+do
+	volumeName=$(echo $volumeSettings | cut -d':' -f 1)
+	volumeDir=$(echo $volumeSettings | cut -d':' -f 2)
+	if [[ "${VCW_STACK_MODULEPREFIX}__$volumeName"  == "$volumePrefix"* ]] ; then
+		executionplane-info --silent docker run -v "${VCW_STACK_MODULEPREFIX}__${volumeSettings}" -v vcw_infometis_repos:/vcw/pwd "${VCW_REGISTRY}hkvb/infometis" \
+		console tar "/vcw/pwd/$selectedNode/${selectedComponent}/_solution/_configuration/volumes/${volumeName}.tar" "${volumeDir}"
+		executionplane --silent docker run -v "${VCW_STACK_MODULEPREFIX}__${volumeSettings}" -v vcw_infometis_repos:/vcw/pwd "${VCW_REGISTRY}hkvb/infometis" \
+		console tar "/vcw/pwd/$selectedNode/${selectedComponent}/_solution/_configuration/volumes/${volumeName}.tar" "${volumeDir}"
+	fi
+done;

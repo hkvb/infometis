@@ -45,7 +45,7 @@ do
 if [[ \"${VCW_STACK_MODULEPREFIX}__${volumeName}\" == \"${DOLLAR}prefix\"* ]] ; then
 	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console cmd cp -r /source/${selectedNode}/_module/volumes/${volumeName}/* ${volumeDir}
 fi" >> _module/deploy-local-up
-	else
+elif [[ -f _module/volumes/${volumeName}.tar ]] ; then
 		echo "
 if [[ \"${VCW_STACK_MODULEPREFIX}__${volumeName}\" == \"${DOLLAR}prefix\"* ]] ; then
 	executionplane --silent docker run -v vcw_infometis_repos:/source -v ${VCW_STACK_MODULEPREFIX}__${volumeName}:${volumeDir} ${DOLLAR}{VCW_REGISTRY}hkvb/infometis console untar /source/${selectedNode}/_module/volumes/${volumeName}.tar

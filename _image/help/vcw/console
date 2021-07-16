@@ -9,7 +9,7 @@
 #              --external                 : pull external non-framework images and tag with registry prefix
 #              --hub                      : pull framework images from Docker hub and tag with registry prefix
 #              --hub-external             : pull framework images that require external access to build and tag with registry prefix
-# console multiarch on/off                : switches multiarch buildx on or off, use release to execute and push the build
+# console multiarch on/off/QEMU           : switches multiarch buildx on or off, use release to build, QEMU to install tonistiigi/binfmt
 # console release [image]                 : push the image to the current registry
 #                 --external              : push the external non-framework images to the current registry
 #                 --hub                   : push the framework images to the current registry
@@ -22,6 +22,5 @@
 # console set-repo-user [name] [email]    : set current user in GIT
 # console tar [tar file] [source]         : create tar file from the source
 # console untar [tar file]                : unpack tar file
-# console with [target] [commandline]     : execute [commandline] for each repository match in [target]
-#                                           commands require @@ separator, instead of ;
+# console with [target] [command]         : execute [command] for each repository match in [target]
 #
