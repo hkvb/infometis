@@ -8,6 +8,7 @@ confluentinc/cp-schema-registry:6.1.1 linux/amd64
 confluentinc/cp-server:6.1.1 linux/amd64
 confluentinc/cp-server-connect:6.1.1 linux/amd64
 confluentinc/cp-zookeeper:6.1.1 linux/amd64
+dabz/ccloudexporter:latest linux/amd64
 docker.elastic.co/apm/apm-server:7.11.2 linux/amd64
 docker.elastic.co/beats/filebeat:7.11.2 linux/amd64
 docker.elastic.co/beats/heartbeat:7.11.2 linux/amd64

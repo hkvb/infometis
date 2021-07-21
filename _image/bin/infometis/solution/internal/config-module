@@ -23,8 +23,11 @@ cat ${componentPath}/_module/configuration >> ${componentPath}/_configuration/co
 if [[ "$replaceConfiguration" == "true" ]] ; then cat ${componentPath}/_configuration/configuration.component > ${componentPath}/_configuration/configuration; fi
 
 if [[ ! -f ${componentPath}/_configuration/module-stacks ]] ; then cp ${componentPath}/_module/module-stacks ${componentPath}/_configuration/module-stacks; fi
+cp ${componentPath}/_module/module-stacks ${componentPath}/_configuration/module-stacks.component;
 if [[ ! -f ${componentPath}/_configuration/module-volumes ]] ; then cp ${componentPath}/_module/module-volumes ${componentPath}/_configuration/module-volumes; fi
+cp ${componentPath}/_module/module-volumes ${componentPath}/_configuration/module-volumes.component;
 if [[ ! -f ${componentPath}/_configuration/module-volumes-initialised ]] ; then cp ${componentPath}/_module/module-volumes-initialised ${componentPath}/_configuration/module-volumes-initialised; fi
+cp ${componentPath}/_module/module-volumes-initialised ${componentPath}/_configuration/module-volumes-initialised.component;
 
 if [[ -d ${componentPath}/_module/configs ]] ; then
   if [[ ! -d ${componentPath}/_configuration/configs ]] ; then mkdir ${componentPath}/_configuration/configs; fi

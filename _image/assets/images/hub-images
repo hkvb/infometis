@@ -6,6 +6,7 @@ hkvb/bash.rest:latest
 hkvb/bash.rest:5.0.18
 hkvb/bash.wrapper:latest
 hkvb/bash.wrapper:5.0.18
+hkvb/ccloudmetrics:latest
 hkvb/confluent:latest
 hkvb/confluent:6.1.1
 hkvb/confluent.kafka_connect.rest:latest

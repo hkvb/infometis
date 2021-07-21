@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-export VCW_SOLUTION_HOSTNAME="${VCW_HOSTNAME}"

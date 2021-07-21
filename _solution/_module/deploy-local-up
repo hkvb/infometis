@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-prefix="vcw_module_hkvb_infometis__$1"
-prefix="vcw_module_hkvb_infometis__$1"
-
-if [[ "vcw_module_hkvb_infometis__vcw_infometis_repos" == "$prefix"* ]] ; then
-	executionplane --silent docker volume create vcw_module_hkvb_infometis__vcw_infometis_repos
-fi
