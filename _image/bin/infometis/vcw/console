@@ -38,9 +38,19 @@
           done
         ;;
         *)
-          executionplane docker image pull ${2}
-          executionplane docker tag ${2} ${VCW_REGISTRY}${2}
-          executionplane docker image push ${VCW_REGISTRY}${2}
+          image="${2}"
+          multiArchs="${3}"
+          if [[ "$multiArchs" == "" ]] ; then multiArchs="linux/amd64"; fi
+          executionplane docker image pull $image
+          executionplane docker tag $image ${VCW_REGISTRY}$image
+          if [[ "$(docker buildx ls | grep infometis)" == "" ]] ; then
+            executionplane docker image push ${VCW_REGISTRY}$image
+          else
+            tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
+            echo "FROM ${image}" > $tmpfile
+            executionplane docker buildx build --platform "$multiArchs" --push -t ${VCW_REGISTRY}${image} -f $tmpfile .
+            rm $tmpfile
+          fi
         ;;
       esac
     ;;
@@ -49,7 +59,7 @@
         executionplane docker run --privileged --rm ${VCW_REGISTRY}tonistiigi/binfmt --install all
       elif [[ "$2" == "on" ]] ; then
         if [[ "$(docker buildx ls | grep infometis)" != "" ]] ; then executionplane docker buildx rm infometis ; fi
-        executionplane docker buildx create --name infometis
+        executionplane docker buildx create --name infometis --driver docker-container --driver-opt image=moby/buildkit:v0.8.3
         executionplane docker buildx use infometis
         executionplane docker buildx inspect --bootstrap
         if [[ "${VCW_REGISTRY}" != "" ]] ; then
@@ -80,7 +90,7 @@
         . executionplane-capture-output docker create "${VCW_REGISTRY}hkvb/poc"
         executionplane rm -rf /vcw/pwd/${repoNode}
         executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/blank/repo /vcw/pwd/${repoNode}
-        chmod 755 /vcw/pwd/${repoNode}
+        chmod -R 755 /vcw/pwd/${repoNode}
       elif [[ ! -f ./${repoNode}/Dockerfile && "${3}" == "--extract" ]] ; then
         if [[ "$4" != "--local" && "$(docker node ls -q | wc -l)" != "1" ]] ; then
   				infometis-service console set "$2" --extract --local
@@ -94,7 +104,7 @@
         fi
       elif [[ ! -d ./$2 ]] ; then
         mkdir ./${2}
-        chmod 755 ./$2
+        chmod -R 755 ./$2
       fi
     ;;
     set-repo-user)

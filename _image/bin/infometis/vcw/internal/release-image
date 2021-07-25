@@ -19,6 +19,7 @@ else
 
     export VCW_TAG="$imageTag"
     export VCW_TAG_BASH="5.0.18"
+    export GODEBUG=x509ignoreCN=0
     tmpfile=$(mktemp /tmp/Dockerfile${extension}.XXXXXX)
     cat  /vcw/pwd/$selectedNode/Dockerfile${extension} | envsubst > $tmpfile
     executionplane docker buildx build --platform "$multiArchs" --push -t ${releaseImage} -f $tmpfile /vcw/pwd/$selectedNode/.

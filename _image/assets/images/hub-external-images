@@ -4,5 +4,6 @@ hkvb/confluent.kafka_connect:latest
 hkvb/confluent.kafka_connect:6.1.1
 hkvb/infometis.base:latest
 hkvb/infometis.base:1.0.0
+hkvb/nixos.plutus:2.3.12
 hkvb/streamsets.base:latest
 hkvb/streamsets.base:3.16.0

@@ -56,7 +56,7 @@
 				executionplane-info "Creating new $2"
 				. executionplane-capture-output docker create "${VCW_REGISTRY}hkvb/poc"
 				executionplane docker container cp ${VCW_EXECUTIONPLANE_OUTPUT}:/vcw/repo/blank/$unit/. /vcw/pwd/${selectedNode}
-				chmod 755 /vcw/pwd/${selectedNode}
+				chmod -R 755 /vcw/pwd/${selectedNode}
 			fi
 		;;
 		extract)

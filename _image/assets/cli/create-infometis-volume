@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-sudo docker container prune --force
-sudo docker volume rm vcw_infometis_repos
-sudo docker volume create --driver local --opt type=none --opt o=bind --opt device=$(pwd) vcw_infometis_repos
+${VCW_SUDO} docker container prune --force
+${VCW_SUDO} docker volume rm vcw_infometis_repos
+${VCW_SUDO} docker volume create --driver local --opt type=none --opt o=bind --opt device=$(pwd) vcw_infometis_repos

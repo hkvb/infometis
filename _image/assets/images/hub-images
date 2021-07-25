@@ -21,6 +21,7 @@ hkvb/grafana:latest
 hkvb/grafana:7.2.1
 hkvb/infometis:latest
 hkvb/infometis:1.0.0
+hkvb/nixos:2.3.12
 hkvb/poc:latest
 hkvb/poc:1.0.0
 hkvb/poc.blank.image:latest

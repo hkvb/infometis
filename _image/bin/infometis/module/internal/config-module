@@ -33,4 +33,4 @@ touch _module/module-stacks.module
 touch _module/module-volumes
 touch _module/module-volumes-initialised
 if [[ ! -f _module/module-stacks ]] ; then cp _module/module-stacks.module _module/module-stacks; fi
-chmod 777 _module/*
+chmod -R 777 _module/*

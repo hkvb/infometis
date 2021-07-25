@@ -12,12 +12,15 @@ if [[ "$1" == "--"* ]] ; then
 	if [[ "$1" == "--windows" ]] ; then export VCW_OS="windows";
 	elif [[ "$1" == "--linux" ]] ; then export VCW_OS="linux";
 	elif [[ "$1" == "--cli" ]] ; then
+		if [[ "$2" == "sudo" ]] ; then
+			export VCW_SUDO="sudo"
+		fi
 		for f in /vcw/assets/cli/*;
 		do
   		filename=$(basename $f)
 			cat $f | envsubst '$VCW_REGISTRY' > /vcw/pwd/$filename;
 		done;
-		chmod 755 /vcw/pwd/*
+		chmod -R 755 /vcw/pwd/*
 		echo "CLI files extracted.";
 		exit 0;
 	fi
