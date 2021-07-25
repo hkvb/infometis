@@ -1,22 +1,22 @@
 # architectures: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
-FROM ${VCW_REGISTRY}hkvb/bash.wrapper:5.0.18
+FROM ${VCW_REGISTRY}${VCW_REALM}/bash.wrapper:${VCW_TAG_BASH}
 
 ADD https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-amd64 /root/.docker/cli-plugins/docker-buildx
 
 RUN apk update && apk add docker && apk add git && apk add inotify-tools && apk add nano && apk add curl && rm -rf /var/cache/apk/* && chmod -R 755 /root/.docker
 
-ENV VCW_REALM=hkvb \
+ENV VCW_REALM=${VCW_REALM} \
     VCW_IMAGE=infometis \
     VCW_FLAVOR=base \
-    VCW_TAG=1.0.0 \
-    VCW_IMAGENAME=hkvb/infometis.base \
+    VCW_TAG=${VCW_TAG} \
+    VCW_IMAGENAME=${VCW_REALM}/infometis.base \
     DOCKER_CLI_EXPERIMENTAL=enabled
 
 LABEL co.vcweb.schema-version="1.0" \
-      co.vcweb.label="hkvb/infometis.base - External Build" \
+      co.vcweb.label="${VCW_REALM}/infometis.base - External Build" \
       co.vcweb.description="Base Infometis infometisimage." \
-      co.vcweb.realm="hkvb" \
+      co.vcweb.realm="${VCW_REALM}" \
       co.vcweb.image="infometis" \
       co.vcweb.flavor="base" \
-      co.vcweb.tag="1.0.0" \
+      co.vcweb.tag="${VCW_TAG}" \
       co.vcweb.maintainer="vcw@vcweb.co"
