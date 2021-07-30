@@ -55,7 +55,7 @@ do
 		done;
 
 		# configs and volumes folders
-		oldStack="${oldPackage:9}"
+		oldStack=$(echo "${oldPackage}" | cut -d'_' -f1)
 		let "prefix = ${#oldPackage}"
 		for f in _module/import/$package/configs/*
 		do
